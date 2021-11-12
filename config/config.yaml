@@ -1,0 +1,20 @@
+Basic:
+  BotName: 背讯
+  MAH:
+    BotQQ: 2835692118
+    MiraiAuthKey: INITKEYHx4Bp71o
+    MiraiHost: http://localhost:8080
+  MiraiPath: mirai/
+  Permission:
+    Admin:
+    - 2784535931
+    Master: 2784535931
+    MasterName: beibao233
+Final: true
+Saya:
+  jrrp:
+    Disabled: false
+  kedaTTS:
+    Disabled: false
+  sick:
+    Disabled: false
