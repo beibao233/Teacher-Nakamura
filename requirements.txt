@@ -11,3 +11,4 @@ zhon==1.1.5
 pyyaml==5.4.1
 pathlib==1.0.1
 requests==2.12.1
+tencentcloud-sdk-python
