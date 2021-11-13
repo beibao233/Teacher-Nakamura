@@ -22,12 +22,17 @@ async def AIchat(app: GraiaMiraiApplication, group: Group, message: MessageChain
             puremsg = remPunc(message.asDisplay().replace("@2835692118 ", "", 1))
             if puremsg.replace("啊", "").replace("阿", "") == "你是谁":
                 await app.sendGroupMessage(group, MessageChain.create([
-                    At(member.id), Plain(f"我是背讯啊~")
+                    At(member.id), Plain(f"你好 我是背讯")
                 ]))
             else:
-                await app.sendGroupMessage(group, MessageChain.create([
-                    At(member.id), Plain(f"" + talk(puremsg))
-                ]))
+                if talk(puremsg).find("腾讯") or talk(puremsg).find("小龙女"):
+                    await app.sendGroupMessage(group, MessageChain.create([
+                        At(member.id), Plain(f"你好 我是背讯")
+                    ]))
+                else:
+                    await app.sendGroupMessage(group, MessageChain.create([
+                        At(member.id), Plain(f"" + talk(puremsg))
+                    ]))
     except IndexError:
         pass
 
