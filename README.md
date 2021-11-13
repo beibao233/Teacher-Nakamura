@@ -108,7 +108,7 @@
 
 	把刚刚从Console里获取到的auth Key填进去， 更改机器人的QQ号。其他自定义就可以。
 
-5.双击start.bat启动
+5.直接启动main.py
 
 6.Have fun :D
 
