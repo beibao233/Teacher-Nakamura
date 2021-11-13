@@ -36,7 +36,7 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain):
     if check(message.asDisplay(), [".ohb", ".欧皇榜"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"欧皇榜：\n" + gentmsg4data(1) + "(仅显示前三)")]
