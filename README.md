@@ -1,6 +1,4 @@
-<img src="https://z3.ax1x.com/2021/11/13/IrhHRH.png" alt="Icon" title="Icon" style="zoom:50%;" />
-
-<center style="color:gray">名字来自于《日常》里的中村加奈</center>
+<div align="center"><img src="https://z3.ax1x.com/2021/11/13/IrhHRH.png" alt="Icon" title="Icon" /><center style="color:gray">名字来自于《日常》里的中村加奈</center></div>
 
 # Teacher-Nakamura 中村老师
 
