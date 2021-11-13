@@ -10,11 +10,11 @@
 
 ### 上游用了什么？
 
-1.[Mirai](!https://github.com/mamoe/mirai)
+1.<a href="https://github.com/mamoe/mirai">Mirai</a>
 
-2.[Mirai-Http-API](!https://github.com/project-mirai/mirai-api-http)
+2.<a href="https://github.com/project-mirai/mirai-api-http">Mirai-Http-API</a>
 
-3.[Graia-Framework](!https://github.com/GraiaProject/Application)
+3.<a href=https://github.com/GraiaProject/Application>Graia-Framework</a>
 
 ### 开发状态？
 
