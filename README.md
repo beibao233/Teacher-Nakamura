@@ -28,7 +28,7 @@
 >
 > 	使用pip install -r requirements.txt安装需求库
 
-1.本项目支持自动带起<a href="https://github.com/iTXTech/mirai-console-loader">Mirai Console Loader</a>，使用<a herf="https://github.com/iTXTech/mcl-installer">iTXTech MCL Installer</a>在您设定的Mirai根目录下安装MCL（默认路径为 /mirai ）
+1.本项目支持自动带起<a href="https://github.com/iTXTech/mirai-console-loader">Mirai Console Loader</a>，使用<a href="https://github.com/iTXTech/mcl-installer">iTXTech MCL Installer</a>在您设定的Mirai根目录下安装MCL（默认路径为 /mirai ）
 
 2.安装完成后请将该目录下的 config.json 替换为下列内容 
 
@@ -76,7 +76,7 @@
 }
 ```
 
-3. 下载<a herf="https://github.com/project-mirai/mirai-api-http/releases/tag/v1.12.0">Mirai-Http-API</a> 1.X版本。下载jar文件后将文件放在该目录下的plugins文件夹下，启动MCL。等待Console出现类似的提示信息后记录auth Key和server IP。
+3. 下载<a href="https://github.com/project-mirai/mirai-api-http/releases/tag/v1.12.0">Mirai-Http-API</a> 1.X版本。下载jar文件后将文件放在该目录下的plugins文件夹下，启动MCL。等待Console出现类似的提示信息后记录auth Key和server IP。
 
    [![IsJQdf.md.png](https://z3.ax1x.com/2021/11/13/IsJQdf.md.png)](https://imgtu.com/i/IsJQdf)
 
@@ -116,4 +116,4 @@
 
 Mirai和Graia等库的开发让这个项目可能
 
-<a herf="https://github.com/djkcyl">A60</a> 感谢解答部分环境配置问题
+<a href="https://github.com/djkcyl">A60</a> 感谢解答部分环境配置问题
