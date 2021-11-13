@@ -1,15 +1,15 @@
 Basic:
-  BotName: 背讯
+  BotName: 默认名字-请更改
   MAH:
-    BotQQ: 2835692118
-    MiraiAuthKey: INITKEYHx4Bp71o
+    BotQQ: 数字-机器人QQ号
+    MiraiAuthKey: 字符串-MAH登录密钥
     MiraiHost: http://localhost:8080
   MiraiPath: mirai/
   Permission:
     Admin:
-    - 2784535931
-    Master: 2784535931
-    MasterName: beibao233
+    - 管理员QQ
+    Master: 主人QQ
+    MasterName: 主人名字
 Final: true
 Saya:
   jrrp:
