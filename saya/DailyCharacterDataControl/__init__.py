@@ -12,9 +12,20 @@ from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from config.BFM_config import yaml_data
 from tool.callcheck import check
+from saya.CheckInControl import getCheckinList
+from saya.CheckInControl import checkInAction
+
 
 saya = Saya.current()
 channel = Channel.current()
+
+
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+    if check(message.asDisplay().strip(), [".ntgm",".逆天改命"]):
+        await app.sendGroupMessage(group, MessageChain.create([
+            At(member.id), Plain(f"\n" + CdFl(member.id))]
+        ))
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
@@ -45,6 +56,26 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"非酋榜：\n" + gentmsg4data(0) + "(仅显示前三)")]
         ))
+
+
+def CdFl(qq):
+    try:
+        rp = getjrrplist()[str(qq)]
+    except KeyError:
+        return "在使用逆天改命前请先使用.jrrp"
+    try:
+        cin = getCheckinList()[qq]["num"]
+    except KeyError:
+        return "在使用逆天改命前请先使用.ci"
+    if cin >= 3:
+        if rp < 60:
+            addjrrplist(str(qq), random.randint(0, 100))
+            checkInAction("delete", qq, 3)
+            return "您今天的人品为：{0}".format(getjrrplist()[str(qq)])
+        else:
+            return "您今天人品大于等于60\n无法逆天改命！"
+    else:
+        return "您的签到次数小于三\n无法逆天改命！"
 
 
 def getjrrplist():

@@ -24,11 +24,11 @@ async def CheckInFront(app: GraiaMiraiApplication, group: Group, message: Messag
     if check(message.asDisplay().strip(), [".checkin", ".签到", ".check", ".ci", ".qd"]):
         if checkIn(member.id, member.name) == "in":
             await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"您今天在{getCheckinList()[member.id]['ltime']}的时候签到过了\n您已签到" + str(
+                At(member.id), Plain(f"\n您今天在{getCheckinList()[member.id]['ltime']}的时候签到过了\n您已签到" + str(
                     getCheckinList()[member.id]['num']) + "次！")
             ]))
         else:
-            output = getCheckinList()[member.id]['name'] + "签到成功!\n签到次数：" + str(
+            output = getCheckinList()[member.id]['name'] + "\n签到成功!\n签到次数：" + str(
                 getCheckinList()[member.id]['num']) + "\n签到时间：" + getCheckinList()[member.id][
                          'ltime']
             await app.sendGroupMessage(group, MessageChain.create([
@@ -37,19 +37,19 @@ async def CheckInFront(app: GraiaMiraiApplication, group: Group, message: Messag
 
 
 @channel.use(ListenerSchema(listening_events=[FriendMessage]))
-async def group_message_handler(
+async def friend_message_handler(
         app: GraiaMiraiApplication,
         friend: Friend,
         saying: MessageChain,
 ):
-    if check(friend.id, yaml_data["Basic"]["Permission"]["Admin"]) and saying.startswith(".签增"):
-        checkInAction("add", int(saying.asDisplay().split()[0]),
+    if check(friend.id, yaml_data["Basic"]["Permission"]["Admin"]) and saying.asDisplay().startswith(".签增"):
+        checkInAction("add", int(saying.asDisplay().replace(".签增", "").split()[0]),
                       int(list(reversed(saying.asDisplay().split()))[0]))
         await app.sendFriendMessage(friend, MessageChain.create([
             Plain(f"成功！")
         ]))
-    elif check(friend.id, yaml_data["Basic"]["Permission"]["Admin"]) and saying.startswith(".签减"):
-        checkInAction("delete", int(saying.asDisplay().split()[0]),
+    elif check(friend.id, yaml_data["Basic"]["Permission"]["Admin"]) and saying.asDisplay().startswith(".签减"):
+        checkInAction("delete", int(saying.asDisplay().replace(".签减", "").split()[0]),
                       int(list(reversed(saying.asDisplay().split()))[0]))
         await app.sendFriendMessage(friend, MessageChain.create([
             Plain(f"成功！")
