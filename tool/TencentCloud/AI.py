@@ -6,11 +6,12 @@ from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.nlp.v20190408 import nlp_client, models
 
+from config.BFM_config import yaml_data
+
 
 def talk(text):
     try:
-        #请填写
-        cred = credential.Credential("", "")
+        cred = credential.Credential(yaml_data["TencentCloud"]["SecretId"],yaml_data["TencentCloud"]["SecretKey"])
         httpProfile = HttpProfile()
         httpProfile.endpoint = "nlp.tencentcloudapi.com"
 
