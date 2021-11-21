@@ -14,9 +14,3 @@ TencentCloud:
   SecretId: 腾讯云SecretId
   SecretKey: 腾讯云SecretKey
 Saya:
-  jrrp:
-    Disabled: false
-  kedaTTS:
-    Disabled: false
-  sick:
-    Disabled: false

@@ -7,6 +7,7 @@ from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from tool.callcheck import check
 
+
 saya = Saya.current()
 channel = Channel.current()
 bcc = saya.broadcast
@@ -20,6 +21,3 @@ async def helpHandler(app: GraiaMiraiApplication, group: Group, message: Message
             At(member.id), Plain(f"\n帮助列表：\n——————角色功能——————\n@机器人：对话\n——————基础功能——————\n.jrrp 今日人品"
                                  f"\n.ntgm 逆天改命\n.ci 签到")]
         ))
-
-
-
