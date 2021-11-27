@@ -18,7 +18,6 @@ import requests
 
 print(os.path.abspath(os.path.dirname(__file__)))
 
-ignore = ["__init__.py", "__pycache__"]
 
 loop = asyncio.get_event_loop()
 bcc = Broadcast(loop=loop)
@@ -52,7 +51,7 @@ while True:
 with saya.module_context():
     os.chdir(os.path.abspath(os.path.dirname(__file__)))
     for module in os.listdir("saya"):
-        if module in ignore:
+        if module == "__pycache__":
             continue
         if os.path.isdir(module):
             saya.require(f"saya.{module}")
