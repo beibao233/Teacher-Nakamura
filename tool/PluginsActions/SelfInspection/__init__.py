@@ -36,5 +36,3 @@ def remove_inspection(ignore=None):
     for name in data:
         if not (name in real):  # 判断是否存在 如果不存在删除
             del yaml_data["Saya"][name]
-
-    return True
