@@ -11,10 +11,50 @@ from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from config.BFM_config import yaml_data
-from tool.callcheck import check
+from tool.callcheck import wake_check
 from saya.CheckInControl import getCheckinList
 from saya.CheckInControl import checkInAction
 
+# Self-Including
+_author = None
+_group = "基础功能"
+_functions = {
+    "jrrp": {
+        "describe": "今日人品",
+        "show": True,
+        "keys": [
+            "jrrp",
+            "今日人品",
+            "rp",
+            "嘉然日批"
+        ]
+    },
+    "ntgm": {
+        "describe": "逆天改命",
+        "show": True,
+        "keys": [
+            "ntgm",
+            "逆天改命",
+            "gm",
+        ]
+    },
+    "EmperorList": {
+        "describe": "欧皇榜",
+        "show": True,
+        "keys": [
+            "ohb",
+            "欧皇榜",
+        ]
+    },
+    "ChieftainList": {
+        "describe": "非酋榜",
+        "show": True,
+        "keys": [
+            "fqb",
+            "非酋榜",
+        ]
+    }
+}
 
 saya = Saya.current()
 channel = Channel.current()
@@ -22,7 +62,7 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if check(message.asDisplay().strip(), [".ntgm",".逆天改命"]):
+    if wake_check(message.asDisplay().strip(), _functions["ntgm"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n" + CdFl(member.id))]
         ))
@@ -30,7 +70,7 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if check(message.asDisplay(), [".jrrp", ".rp"]):
+    if wake_check(message.asDisplay().strip(), _functions["jrrp"]["keys"]):
         if str(member.id) in getjrrplist():
             randint = getjrrplist()[str(member.id)]
             msg = "您今天的人品为：{0}".format(randint)
@@ -48,17 +88,17 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain):
-    if check(message.asDisplay(), [".ohb", ".欧皇榜"]):
+    if wake_check(message.asDisplay(), _functions["EmperorList"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"欧皇榜：\n" + gentmsg4data(1) + "(仅显示前三)")]
         ))
-    elif check(message.asDisplay(), [".fqb", ".非酋榜"]):
+    elif wake_check(message.asDisplay(), _functions["ChieftainList"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"非酋榜：\n" + gentmsg4data(0) + "(仅显示前三)")]
         ))
 
 
-def CdFl(qq):
+def turn2good_bad(qq):
     try:
         rp = getjrrplist()[str(qq)]
     except KeyError:

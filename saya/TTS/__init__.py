@@ -12,6 +12,11 @@ from time import mktime
 from urllib.parse import urlencode
 from wsgiref.handlers import format_date_time
 
+# Self-Including
+_author = None
+_group = "后端功能"
+_functions = {}
+
 
 def t2s(text):
     class Ws_Param(object):

@@ -6,8 +6,20 @@ from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain, Voice_LocalFile, At
 
 from config.BFM_config import yaml_data
-from tool.removePunctuation import remPunc
 from tool.TencentCloud.AI import talk
+
+# Self-Including
+_author = None
+_group = "角色功能"
+_functions = {
+    "AIchat": {
+        "describe": "对话",
+        "show": True,
+        "keys": [
+            "_AT"
+        ]
+    }
+}
 
 saya = Saya.current()
 channel = Channel.current()
@@ -18,8 +30,8 @@ inc = InterruptControl(bcc)
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def AIchat(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
     try:
-        if message.getFirst(At).target == 2835692118 and not message.asDisplay().startswith("."):
-            puremsg = remPunc(message.asDisplay().replace("@2835692118 ", "", 1))
+        if message.getFirst(At).target == 2835692118:
+            puremsg = message.asDisplay().replace("@2835692118 ", "", 1)
             if "腾讯" in talk(puremsg):
                 await app.sendGroupMessage(group, MessageChain.create([
                     At(member.id), Plain(f"你好 我是{yaml_data['Basic']['BotName']}")

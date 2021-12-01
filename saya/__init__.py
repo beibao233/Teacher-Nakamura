@@ -2,6 +2,11 @@ from config.BFM_config import yaml_data
 
 import os
 
+# Self-Including
+_author = None
+_group = "后端功能"
+_functions = {}
+
 
 def real_plugins():
     """
@@ -73,3 +78,7 @@ def add_plugin_readme(plugin_name, plugin_group, plugin_functions_list, plugin_a
     }
 
     yaml_data["Saya"][plugin_name] = data
+
+
+for plugin in real_plugins():
+    current = __import__(plugin)
