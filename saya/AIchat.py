@@ -8,18 +8,22 @@ from graia.application.message.elements.internal import Plain, MessageChain, Voi
 from config.BFM_config import yaml_data
 from tool.TencentCloud.AI import talk
 
+
 # Self-Including
-_author = None
-_group = "角色功能"
-_functions = {
-    "AIchat": {
-        "describe": "对话",
-        "show": True,
-        "keys": [
-            "_AT"
-        ]
-    }
-}
+class Including:
+    def __init__(self):
+        self.author = None
+        self.group = "角色功能"
+        self.functions = {
+            "AIchat": {
+                "describe": "对话",
+                "show": True,
+                "keys": [
+                    "_AT"
+                ]
+            }
+        }
+
 
 saya = Saya.current()
 channel = Channel.current()
@@ -42,5 +46,3 @@ async def AIchat(app: GraiaMiraiApplication, group: Group, message: MessageChain
                 ]))
     except IndexError:
         pass
-
-

@@ -2,10 +2,13 @@ from config.BFM_config import yaml_data
 
 import os
 
+
 # Self-Including
-_author = None
-_group = "后端功能"
-_functions = {}
+class Including:
+    def __init__(self):
+        self.author = None
+        self.group = "后端功能"
+        self.functions = {}
 
 
 def real_plugins():
@@ -27,7 +30,7 @@ def real_plugins():
     return real
 
 
-def inspection(plugin_name, plugin_group, plugin_functions_list, plugin_author):
+def inspection_check(plugin_name, plugin_group, plugin_functions_list, plugin_author):
     """
     Check plugins are ready write readme or not
     :param plugin_name: the file name without extension
@@ -82,3 +85,7 @@ def add_plugin_readme(plugin_name, plugin_group, plugin_functions_list, plugin_a
 
 for plugin in real_plugins():
     current = __import__(plugin)
+    data = current.Including
+    # Check the plugins readme
+    if not inspection_check(plugin, data.group, data.functions, data.author):
+        add_plugin_readme(plugin, data.group, data.functions, data.author)

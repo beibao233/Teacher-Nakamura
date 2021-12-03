@@ -9,20 +9,23 @@ from tool.callcheck import wake_check
 from tool.qqname import isaqqnum
 import random
 
+
 # Self-Including
-_author = None
-_group = "基础功能"
-_functions = {
-    "sick": {
-        "describe": "发送不寻常的信息",
-        "show": True,
-        "keys": [
-            "犯病",
-            "fb",
-            "嘿嘿"
-        ]
-    }
-}
+class Including:
+    def __init__(self):
+        self._author = None
+        self._group = "基础功能"
+        self._functions = {
+            "sick": {
+                "describe": "发送不寻常的信息",
+                "show": True,
+                "keys": [
+                    "犯病",
+                    "fb",
+                    "嘿嘿"
+                ]
+            }
+        }
 
 saya = Saya.current()
 channel = Channel.current()

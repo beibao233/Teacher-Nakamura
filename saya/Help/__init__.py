@@ -7,21 +7,24 @@ from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from tool.callcheck import wake_check
 
+
 # Self-Including
-_author = None
-_group = "基础功能"
-_functions = {
-    "help": {
-        "describe": "获取帮助",
-        "show": True,
-        "keys": [
-            "help",
-            "救命",
-            "帮助",
-            "bg"
-        ]
-    }
-}
+class Including:
+    def __init__(self, _author, _group, _functions):
+        self.author = None
+        self.group = "基础功能"
+        self.functions = {
+            "help": {
+                "describe": "获取帮助",
+                "show": True,
+                "keys": [
+                    "help",
+                    "救命",
+                    "帮助",
+                    "bg"
+                ]
+            }
+        }
 
 saya = Saya.current()
 channel = Channel.current()

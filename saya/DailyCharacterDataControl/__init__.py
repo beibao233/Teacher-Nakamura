@@ -10,51 +10,54 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain, At
 
-from config.BFM_config import yaml_data
 from tool.callcheck import wake_check
 from saya.CheckInControl import getCheckinList
 from saya.CheckInControl import checkInAction
 
+
 # Self-Including
-_author = None
-_group = "基础功能"
-_functions = {
-    "jrrp": {
-        "describe": "今日人品",
-        "show": True,
-        "keys": [
-            "jrrp",
-            "今日人品",
-            "rp",
-            "嘉然日批"
-        ]
-    },
-    "ntgm": {
-        "describe": "逆天改命",
-        "show": True,
-        "keys": [
-            "ntgm",
-            "逆天改命",
-            "gm",
-        ]
-    },
-    "EmperorList": {
-        "describe": "欧皇榜",
-        "show": True,
-        "keys": [
-            "ohb",
-            "欧皇榜",
-        ]
-    },
-    "ChieftainList": {
-        "describe": "非酋榜",
-        "show": True,
-        "keys": [
-            "fqb",
-            "非酋榜",
-        ]
-    }
-}
+class Including:
+    def __init__(self):
+        self.author = None
+        self.group = "基础功能"
+        self.functions = {
+            "jrrp": {
+                "describe": "今日人品",
+                "show": True,
+                "keys": [
+                    "jrrp",
+                    "今日人品",
+                    "rp",
+                    "嘉然日批"
+                ]
+            },
+            "ntgm": {
+                "describe": "逆天改命",
+                "show": True,
+                "keys": [
+                    "ntgm",
+                    "逆天改命",
+                    "gm",
+                ]
+            },
+            "EmperorList": {
+                "describe": "欧皇榜",
+                "show": True,
+                "keys": [
+                    "ohb",
+                    "欧皇榜",
+                ]
+            },
+            "ChieftainList": {
+                "describe": "非酋榜",
+                "show": True,
+                "keys": [
+                    "fqb",
+                    "非酋榜",
+                ]
+            }
+        }
+
 
 saya = Saya.current()
 channel = Channel.current()
@@ -62,7 +65,7 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if wake_check(message.asDisplay().strip(), _functions["ntgm"]["keys"]):
+    if wake_check(message.asDisplay().strip(), Including._functions["ntgm"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n" + CdFl(member.id))]
         ))
