@@ -6,14 +6,10 @@ from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from tool.callcheck import wake_check
-
+from saya import Including
 
 # Self-Including
-class Including:
-    def __init__(self, _author, _group, _functions):
-        self.author = None
-        self.group = "基础功能"
-        self.functions = {
+readme = Including(author=None, group="基础功能", functions={
             "help": {
                 "describe": "获取帮助",
                 "show": True,
@@ -24,7 +20,8 @@ class Including:
                     "bg"
                 ]
             }
-        }
+        })
+
 
 saya = Saya.current()
 channel = Channel.current()

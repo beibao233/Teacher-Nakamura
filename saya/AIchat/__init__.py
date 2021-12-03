@@ -7,14 +7,10 @@ from graia.application.message.elements.internal import Plain, MessageChain, Voi
 
 from config.BFM_config import yaml_data
 from tool.TencentCloud.AI import talk
-
+from saya import Including
 
 # Self-Including
-class Including:
-    def __init__(self):
-        self.author = None
-        self.group = "角色功能"
-        self.functions = {
+readme = Including(author=None, group="基础功能", functions={
             "AIchat": {
                 "describe": "对话",
                 "show": True,
@@ -22,7 +18,7 @@ class Including:
                     "_AT"
                 ]
             }
-        }
+        })
 
 
 saya = Saya.current()

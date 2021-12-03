@@ -6,18 +6,14 @@ from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from tool.callcheck import wake_check
 from config.BFM_config import yaml_data
-
+from saya import Including
 
 import time
 import ast
 
 
 # Self-Including
-class Including:
-    def __init__(self):
-        self.author = None
-        self.group = "基础功能"
-        self.functions = {
+readme = Including(author=None, group="基础功能", functions={
             "CheckIn": {
                 "describe": "签到",
                 "show": True,
@@ -27,7 +23,7 @@ class Including:
                     "签到"
                 ]
             }
-        }
+        })
 
 
 checkinlist = {}

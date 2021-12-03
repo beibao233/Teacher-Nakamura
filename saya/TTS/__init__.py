@@ -12,10 +12,10 @@ from time import mktime
 from urllib.parse import urlencode
 from wsgiref.handlers import format_date_time
 
+from saya import Including
+
 # Self-Including
-_author = None
-_group = "后端功能"
-_functions = {}
+readme = Including(author=None, group="后端功能", functions={})
 
 
 def t2s(text):

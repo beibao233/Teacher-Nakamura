@@ -3,14 +3,6 @@ from config.BFM_config import yaml_data
 import os
 
 
-# Self-Including
-class Including:
-    def __init__(self):
-        self.author = None
-        self.group = "后端功能"
-        self.functions = {}
-
-
 def real_plugins():
     """
     Return plugins are load
@@ -83,9 +75,16 @@ def add_plugin_readme(plugin_name, plugin_group, plugin_functions_list, plugin_a
     yaml_data["Saya"][plugin_name] = data
 
 
+class Including:
+    def __init__(self, author: None or str, group: str, functions: dict):
+        self.author = author
+        self.group = group
+        self.functions = functions
+
+
 for plugin in real_plugins():
-    current = __import__(plugin)
-    data = current.Including
+    current = __import__("saya."+plugin)
+    data = current.readme
     # Check the plugins readme
     if not inspection_check(plugin, data.group, data.functions, data.author):
         add_plugin_readme(plugin, data.group, data.functions, data.author)

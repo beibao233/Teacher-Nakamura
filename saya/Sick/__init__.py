@@ -7,15 +7,12 @@ from graia.application.message.elements.internal import Plain, MessageChain
 
 from tool.callcheck import wake_check
 from tool.qqname import isaqqnum
+from saya import Including
 import random
 
 
 # Self-Including
-class Including:
-    def __init__(self):
-        self._author = None
-        self._group = "基础功能"
-        self._functions = {
+readme = Including(author=None, group="基础功能", functions={
             "sick": {
                 "describe": "发送不寻常的信息",
                 "show": True,
@@ -25,7 +22,9 @@ class Including:
                     "嘿嘿"
                 ]
             }
-        }
+        })
+
+
 
 saya = Saya.current()
 channel = Channel.current()
