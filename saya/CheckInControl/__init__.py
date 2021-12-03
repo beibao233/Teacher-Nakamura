@@ -35,7 +35,7 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def CheckInFront(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if wake_check(message.asDisplay().strip(), _functions["CheckIn"]["keys"]):
+    if wake_check(message.asDisplay().strip(), readme.functions["CheckIn"]["keys"]):
         if checkIn(member.id, member.name) == "in":
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"\n您今天在{getCheckinList()[member.id]['ltime']}的时候签到过了\n您已签到" + str(

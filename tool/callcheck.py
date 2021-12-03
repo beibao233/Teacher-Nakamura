@@ -3,5 +3,5 @@ from config.BFM_config import yaml_data
 
 def wake_check(text, checklist):
     for i in checklist:
-        if i.replace(yaml_data["Basic"]["WakeText"], "") == text and i.startwith(yaml_data["Basic"]["WakeText"]):
+        if text.replace(yaml_data["Basic"]["WakeText"], "") == i and text.startswith(yaml_data["Basic"]["WakeText"]):
             return True

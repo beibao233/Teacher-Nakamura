@@ -36,7 +36,7 @@ async def sick(
         group: Group,
         saying: MessageChain
 ):
-    if wake_check(saying.asDisplay(), _functions["sick"]["keys"]):
+    if wake_check(saying.asDisplay(), readme.functions["sick"]["keys"]):
         name = isaqqnum(saying.asDisplay())
         if not name:
             msg = "{0}你怎么样，我最近过的不好{1}。".format(saying.asDisplay().strip(), "5" * random.randint(0, 10))

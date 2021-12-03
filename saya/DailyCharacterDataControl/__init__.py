@@ -61,15 +61,15 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if wake_check(message.asDisplay().strip(), Including._functions["ntgm"]["keys"]):
+    if wake_check(message.asDisplay().strip(), readme.functions["ntgm"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
-            At(member.id), Plain(f"\n" + CdFl(member.id))]
+            At(member.id), Plain(f"\n" + turn2good_bad(member.id))]
         ))
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if wake_check(message.asDisplay().strip(), _functions["jrrp"]["keys"]):
+    if wake_check(message.asDisplay().strip(), readme.functions["jrrp"]["keys"]):
         if str(member.id) in getjrrplist():
             randint = getjrrplist()[str(member.id)]
             msg = "您今天的人品为：{0}".format(randint)
@@ -87,11 +87,11 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain):
-    if wake_check(message.asDisplay(), _functions["EmperorList"]["keys"]):
+    if wake_check(message.asDisplay(), readme.functions["EmperorList"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"欧皇榜：\n" + gentmsg4data(1) + "(仅显示前三)")]
         ))
-    elif wake_check(message.asDisplay(), _functions["ChieftainList"]["keys"]):
+    elif wake_check(message.asDisplay(), readme.functions["ChieftainList"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"非酋榜：\n" + gentmsg4data(0) + "(仅显示前三)")]
         ))

@@ -3,6 +3,16 @@ from config.BFM_config import yaml_data
 import os
 
 
+class Including:
+    def __init__(self, author: None or str, group: str, functions: dict):
+        self.author = author
+        self.group = group
+        self.functions = functions
+
+
+readme = Including(author=None, group="后端功能", functions={})
+
+
 def real_plugins():
     """
     Return plugins are load
@@ -31,16 +41,15 @@ def inspection_check(plugin_name, plugin_group, plugin_functions_list, plugin_au
     :param plugin_author: the author of the plugins
     :return: the result of plugin readme have or not
     """
-    if plugin_name in yaml_data["saya"]:
-        if (
-            plugin_group in yaml_data["saya"][plugin_name] and
-            plugin_functions_list in yaml_data["saya"][plugin_name] and
-            plugin_author in yaml_data["saya"][plugin_name]
-        ):
-            return True
-        else:
-            return False
-    else:
+    try:
+        if plugin_name in yaml_data["saya"]:
+            if (
+                plugin_group in yaml_data["saya"][plugin_name] and
+                plugin_functions_list in yaml_data["saya"][plugin_name] and
+                plugin_author in yaml_data["saya"][plugin_name]
+            ):
+                return True
+    except KeyError:
         return False
 
 
@@ -66,20 +75,21 @@ def add_plugin_readme(plugin_name, plugin_group, plugin_functions_list, plugin_a
     :param plugin_author: the author of the plugins
     :return:
     """
-    data = {
-        "Group": plugin_group,
-        "Functions": plugin_functions_list,
-        "Author": plugin_author
-    }
 
-    yaml_data["Saya"][plugin_name] = data
+    if plugin_author is None:
+        plugin_author = "Include"
 
+    for _ in plugin_functions_list.keys():
+        if not (plugin_functions_list[_]["show"] is False or plugin_group == "后端功能"):
 
-class Including:
-    def __init__(self, author: None or str, group: str, functions: dict):
-        self.author = author
-        self.group = group
-        self.functions = functions
+            plugin_data = {
+                "Group": plugin_group,
+                "Functions": plugin_functions_list,
+                "Author": plugin_author
+            }
+
+            yaml_data["Saya"][plugin_name] = plugin_data
+            del plugin_data
 
 
 for plugin in real_plugins():

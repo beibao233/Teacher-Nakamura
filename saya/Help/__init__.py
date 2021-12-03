@@ -31,7 +31,7 @@ inc = InterruptControl(bcc)
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def helpHandler(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
-    if wake_check(message.asDisplay().strip(), _functions["help"]["keys"]):
+    if wake_check(message.asDisplay().strip(), readme.functions["help"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n帮助列表：\n——————角色功能——————\n@机器人：对话\n——————基础功能——————\n.jrrp 今日人品"
                                  f"\n.ntgm 逆天改命\n.ci 签到")]
