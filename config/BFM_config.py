@@ -1,5 +1,6 @@
 import os
 import yaml
+import atexit
 
 from pathlib import Path
 
@@ -26,8 +27,10 @@ if not VIOCE_PATH.exists():
     exit()
 
 
+@atexit.register
 def save_config():
     print("正在保存配置文件")
+    print(yaml_data)
     with open("config/config.yaml", 'w', encoding="utf-8") as f:
         yaml.dump(yaml_data, f, allow_unicode=True, Dumper=NoAliasDumper)
 

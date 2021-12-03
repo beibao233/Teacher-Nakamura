@@ -80,7 +80,7 @@ def add_plugin_readme(plugin_name, plugin_group, plugin_functions_list, plugin_a
         plugin_author = "Include"
 
     for _ in plugin_functions_list.keys():
-        if not (plugin_functions_list[_]["show"] is False or plugin_group == "后端功能"):
+        if plugin_functions_list[_]["show"] is False or plugin_group == "后端功能":
 
             plugin_data = {
                 "Group": plugin_group,
@@ -98,3 +98,4 @@ for plugin in real_plugins():
     # Check the plugins readme
     if not inspection_check(plugin, data.group, data.functions, data.author):
         add_plugin_readme(plugin, data.group, data.functions, data.author)
+        remove_readme()
