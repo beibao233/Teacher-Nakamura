@@ -103,6 +103,10 @@
        - 管理员QQ
        Master: 主人QQ
        MasterName: 主人名字
+     WakeText: .
+   TencentCloud:
+     SecretId: 腾讯云SecretId
+     SecretKey: 腾讯云SecretKey
    Saya:
    ```
 
