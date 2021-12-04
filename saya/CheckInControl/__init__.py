@@ -50,26 +50,6 @@ async def CheckInFront(app: GraiaMiraiApplication, group: Group, message: Messag
             ]))
 
 
-@channel.use(ListenerSchema(listening_events=[FriendMessage]))
-async def friend_message_handler(
-        app: GraiaMiraiApplication,
-        friend: Friend,
-        saying: MessageChain,
-):
-    if wake_check(friend.id, yaml_data["Basic"]["Permission"]["Admin"]) and saying.asDisplay().startswith(".签增"):
-        checkInAction("add", int(saying.asDisplay().replace(".签增", "").split()[0]),
-                      int(list(reversed(saying.asDisplay().split()))[0]))
-        await app.sendFriendMessage(friend, MessageChain.create([
-            Plain(f"成功！")
-        ]))
-    elif wake_check(friend.id, yaml_data["Basic"]["Permission"]["Admin"]) and saying.asDisplay().startswith(".签减"):
-        checkInAction("delete", int(saying.asDisplay().replace(".签减", "").split()[0]),
-                      int(list(reversed(saying.asDisplay().split()))[0]))
-        await app.sendFriendMessage(friend, MessageChain.create([
-            Plain(f"成功！")
-        ]))
-
-
 def checkInAction(action, key, num):
     data = {}
     if action == "delete":
