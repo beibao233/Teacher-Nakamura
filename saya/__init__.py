@@ -1,5 +1,6 @@
 from config.BFM_config import yaml_data
 
+import importlib
 import os
 
 
@@ -93,7 +94,7 @@ def add_plugin_readme(plugin_name, plugin_group, plugin_functions_list, plugin_a
 
 
 for plugin in real_plugins():
-    current = __import__("saya."+plugin)
+    current = importlib.import_module("saya."+plugin)
     data = current.readme
     # Check the plugins readme
     if not inspection_check(plugin, data.group, data.functions, data.author):
