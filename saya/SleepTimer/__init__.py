@@ -64,12 +64,12 @@ async def sleep_handler(
     if wake_check(saying.asDisplay(), readme.functions["sleep"]["keys"]):
         if member.id in sleepList:
             await app.sendGroupMessage(group, MessageChain.create([
-                Plain(f"你怎么还没去睡觉？{member.name}")]
+                Plain(f"你怎么还没去睡觉？ {member.name}")]
             ))
         else:
             write_cache(number=member.id, data=time.time())
             await app.sendGroupMessage(group, MessageChain.create([
-                Plain(f"晚安{member.name}")]
+                Plain(f"晚安 {member.name}")]
             ))
 
 
@@ -85,10 +85,10 @@ async def wakeup_handler(
             sleep_time = time.strftime("%H小时%M分钟%S秒", time.gmtime(time.time() - sleepList[member.id]))
             del_cache(member.id)
             await app.sendGroupMessage(group, MessageChain.create([
-                Plain(f"醒了？{member.name}\n你睡了{sleep_time}")]
+                Plain(f"醒了？{member.name} \n你睡了{sleep_time}")]
             ))
         else:
             await app.sendGroupMessage(group, MessageChain.create([
-                Plain(f"{member.name}你没跟我说过你睡过觉啊？")]
+                Plain(f"{member.name} 你没跟我说过你睡过觉啊？")]
             ))
 
