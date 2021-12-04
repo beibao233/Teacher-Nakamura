@@ -4,7 +4,7 @@ from config.BFM_config import yaml_data
 def wake_check(text, checklist):
     for i in checklist:
         if i.startswith("_"):
-            if text.startswith(yaml_data["Basic"]["WakeText"]):
+            if i.replace("_", "") == text:
                 return True
 
         if i == text.replace(yaml_data["Basic"]["WakeText"], "")\
