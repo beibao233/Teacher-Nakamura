@@ -6,6 +6,7 @@ from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain, At
 
 from tool.callcheck import wake_check
+from config.BFM_config import yaml_data
 from saya import Including
 
 # Self-Including
@@ -29,10 +30,35 @@ bcc = saya.broadcast
 inc = InterruptControl(bcc)
 
 
+def help_msg(msg_start="帮助列表:"):
+    groups = {}
+
+    for _ in yaml_data["Saya"].keys():
+        if yaml_data["Saya"][_]["Group"] in groups:
+            groups[yaml_data["Saya"][_]["Group"]].append(_)
+        else:
+            groups[yaml_data["Saya"][_]["Group"]] = [_]
+
+    for _ in groups:
+        if not _ == "后端功能":
+            msg_start += f"\n——————{_}——————"
+            for gs in groups[_]:
+                for _ in yaml_data["Saya"][gs]['Functions']:
+                    print(_)
+                    if yaml_data["Saya"][gs]['Functions'][_]["show"]:
+                        if yaml_data["Saya"][gs]['Functions'][_]["keys"][0] == "_AT":
+                            msg_start += f"\n@{yaml_data['Basic']['BotName']}: " + \
+                                        yaml_data["Saya"][gs]['Functions'][_]["describe"]
+                        else:
+                            msg_start += "\n" + yaml_data["Basic"]["WakeText"] + \
+                                        yaml_data["Saya"][gs]['Functions'][_]["keys"][0] + ": " + \
+                                        yaml_data["Saya"][gs]['Functions'][_]["describe"]
+    return msg_start
+
+
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def helpHandler(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def help_handler(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
     if wake_check(message.asDisplay().strip(), readme.functions["help"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
-            At(member.id), Plain(f"\n帮助列表：\n——————角色功能——————\n@机器人：对话\n——————基础功能——————\n.jrrp 今日人品"
-                                 f"\n.ntgm 逆天改命\n.ci 签到")]
+            At(member.id), Plain(f"\n" + help_msg())]
         ))

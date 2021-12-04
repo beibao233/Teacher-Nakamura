@@ -10,7 +10,7 @@ from tool.TencentCloud.AI import talk
 from saya import Including
 
 # Self-Including
-readme = Including(author=None, group="基础功能", functions={
+readme = Including(author=None, group="角色功能", functions={
             "AIchat": {
                 "describe": "对话",
                 "show": True,

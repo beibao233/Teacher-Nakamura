@@ -16,7 +16,7 @@ from saya.CheckInControl import checkInAction
 from saya import Including
 
 # Self-Including
-readme = Including(author=None, group="基础功能", functions={
+readme = Including(author=None, group="人品功能", functions={
             "jrrp": {
                 "describe": "今日人品",
                 "show": True,
