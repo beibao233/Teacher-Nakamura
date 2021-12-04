@@ -51,7 +51,7 @@ def help_msg(msg_start="帮助列表:"):
                                             yaml_data["Saya"][gs]['Functions'][_]["describe"]
                             else:
                                 msg_start += "\n" +\
-                                             yaml_data["Saya"][gs]['Functions'][_]["keys"][0] + ": " + \
+                                             yaml_data["Saya"][gs]['Functions'][_]["keys"][0].replace("_", "") + ": " + \
                                              yaml_data["Saya"][gs]['Functions'][_]["describe"]
                         else:
                             msg_start += "\n" + yaml_data["Basic"]["WakeText"] + \

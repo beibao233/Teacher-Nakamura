@@ -8,7 +8,6 @@ from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain
 
 from tool.callcheck import wake_check
-from tool.qqname import isaqqnum
 from saya import Including
 
 
@@ -45,13 +44,13 @@ if sleepList == {}:
 
 def write_cache(number, data):
     sleepList[number] = data
-    with open("saya/CheckInControl/checkin.txt", "w+", encoding="utf-8") as _:
+    with open("saya/SleepTimer/SleepList.cache", "w+", encoding="utf-8") as _:
         _.write(str(sleepList))
 
 
 def del_cache(number):
     del sleepList[number]
-    with open("saya/CheckInControl/checkin.txt", "w+", encoding="utf-8") as _:
+    with open("saya/SleepTimer/SleepList.cache", "w+", encoding="utf-8") as _:
         _.write(str(sleepList))
 
 
@@ -81,14 +80,14 @@ async def wakeup_handler(
         member: Member,
         saying: MessageChain
 ):
-    if wake_check(saying.asDisplay(), readme.functions["sick"]["keys"]):
+    if wake_check(saying.asDisplay(), readme.functions["wakeup"]["keys"]):
         if member.id in sleepList:
-            sleep_time = time.strftime("%H小时%M分钟%S秒", time.localtime(time.time() - sleepList[member.id]))
+            sleep_time = time.strftime("%H小时%M分钟%S秒", time.gmtime(time.time() - sleepList[member.id]))
+            del_cache(member.id)
             await app.sendGroupMessage(group, MessageChain.create([
                 Plain(f"醒了？{member.name}\n你睡了{sleep_time}")]
             ))
         else:
-            write_cache(number=member.id, data=time.time())
             await app.sendGroupMessage(group, MessageChain.create([
                 Plain(f"{member.name}你没跟我说过你睡过觉啊？")]
             ))
