@@ -1,4 +1,3 @@
-from graia.application.message.parser.literature import Literature
 from graia.saya import Saya, Channel
 from graia.application import GraiaMiraiApplication
 from graia.saya.builtins.broadcast.schema import ListenerSchema

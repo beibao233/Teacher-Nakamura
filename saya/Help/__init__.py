@@ -44,11 +44,15 @@ def help_msg(msg_start="帮助列表:"):
             msg_start += f"\n——————{_}——————"
             for gs in groups[_]:
                 for _ in yaml_data["Saya"][gs]['Functions']:
-                    print(_)
                     if yaml_data["Saya"][gs]['Functions'][_]["show"]:
-                        if yaml_data["Saya"][gs]['Functions'][_]["keys"][0] == "_AT":
-                            msg_start += f"\n@{yaml_data['Basic']['BotName']}: " + \
-                                        yaml_data["Saya"][gs]['Functions'][_]["describe"]
+                        if yaml_data["Saya"][gs]['Functions'][_]["keys"][0].startswith("_"):
+                            if yaml_data["Saya"][gs]['Functions'][_]["keys"][0] == "_AT":
+                                msg_start += f"\n@{yaml_data['Basic']['BotName']}: " + \
+                                            yaml_data["Saya"][gs]['Functions'][_]["describe"]
+                            else:
+                                msg_start += "\n" +\
+                                             yaml_data["Saya"][gs]['Functions'][_]["keys"][0] + ": " + \
+                                             yaml_data["Saya"][gs]['Functions'][_]["describe"]
                         else:
                             msg_start += "\n" + yaml_data["Basic"]["WakeText"] + \
                                         yaml_data["Saya"][gs]['Functions'][_]["keys"][0] + ": " + \
