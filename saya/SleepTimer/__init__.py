@@ -12,7 +12,6 @@ from tool.qqname import isaqqnum
 from saya import Including
 
 
-
 # Self-Including
 readme = Including(author=None, group="角色功能", functions={
             "sleep": {
