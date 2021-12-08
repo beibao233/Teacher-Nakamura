@@ -27,7 +27,7 @@ inc = InterruptControl(bcc)
 
 @channel.use(ListenerSchema(listening_events=[NudgeEvent]))
 async def send_back_nudge(app: GraiaMiraiApplication, nudge: NudgeEvent):
-    if nudge.target == yaml_data["Basic"]["BotName"]["MAH"]["BotQQ"]:
+    if yaml_data["Basic"]["MAH"]["BotQQ"] == nudge.target:
         try:
             if nudge.context_type == "friend":
                 await app.nudge(await app.getFriend(nudge.friend_id))
