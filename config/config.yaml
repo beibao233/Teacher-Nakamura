@@ -14,4 +14,6 @@ Basic:
 TencentCloud:
   SecretId: 腾讯云SecretId
   SecretKey: 腾讯云SecretKey
+AIAPI:
+  Token: AIAPI_Token
 Saya: {}
