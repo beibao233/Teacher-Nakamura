@@ -63,18 +63,17 @@ async def sleep_handler(
         member: Member,
         saying: MessageChain
 ):
-    if json.load(censor_text(saying.asDisplay()).text)['data']['conclusion'] != "不合规":
-        if censor_text(saying.asDisplay()).text:
-            if wake_check(saying.asDisplay(), readme.functions["sleep"]["keys"]):
-                if member.id in sleepList:
-                    await app.sendGroupMessage(group, MessageChain.create([
-                        Plain(f"你怎么还没去睡觉？ {member.name}")]
-                    ))
-                else:
-                    write_cache(number=member.id, data=time.time())
-                    await app.sendGroupMessage(group, MessageChain.create([
-                        Plain(f"晚安 {member.name}")]
-                    ))
+    if json.load(censor_text(member.name).text)['data']['conclusion'] != "不合规":
+        if wake_check(saying.asDisplay(), readme.functions["sleep"]["keys"]):
+            if member.id in sleepList:
+                await app.sendGroupMessage(group, MessageChain.create([
+                    Plain(f"你怎么还没去睡觉？ {member.name}")]
+                ))
+            else:
+                write_cache(number=member.id, data=time.time())
+                await app.sendGroupMessage(group, MessageChain.create([
+                    Plain(f"晚安 {member.name}")]
+                ))
     else:
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain("名字里含有",
@@ -90,7 +89,7 @@ async def wakeup_handler(
         member: Member,
         saying: MessageChain
 ):
-    if json.load(censor_text(saying.asDisplay()).text)['data']['conclusion'] != "不合规":
+    if json.load(censor_text(member.name).text)['data']['conclusion'] != "不合规":
         if wake_check(saying.asDisplay(), readme.functions["wakeup"]["keys"]):
             if member.id in sleepList:
                 sleep_time = time.strftime("%H小时%M分钟%S秒", time.gmtime(time.time() - sleepList[member.id]))
