@@ -63,8 +63,9 @@ async def sleep_handler(
         member: Member,
         saying: MessageChain
 ):
-    if json.load(censor_text(member.name).text)['data']['conclusion'] != "不合规":
-        if wake_check(saying.asDisplay(), readme.functions["sleep"]["keys"]):
+    if wake_check(saying.asDisplay(), readme.functions["sleep"]["keys"]):
+        name_check = json.loads(censor_text(member.name))
+        if name_check['data']['conclusion'] != "不合规":
             if member.id in sleepList:
                 await app.sendGroupMessage(group, MessageChain.create([
                     Plain(f"你怎么还没去睡觉？ {member.name}")]
@@ -74,12 +75,10 @@ async def sleep_handler(
                 await app.sendGroupMessage(group, MessageChain.create([
                     Plain(f"晚安 {member.name}")]
                 ))
-    else:
-        await app.sendGroupMessage(group, MessageChain.create([
-            At(member.id), Plain("名字里含有",
-                                 json.load(censor_text(saying.asDisplay()).text)['data']['conclusion'],
-                                 "\n请更改！")]
-        ))
+        else:
+            await app.sendGroupMessage(group, MessageChain.create([
+                At(member.id), Plain(f"\n名字里含有{name_check['data']['data'][0]['msg']}\n请更改！")]
+            ))
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
@@ -89,8 +88,9 @@ async def wakeup_handler(
         member: Member,
         saying: MessageChain
 ):
-    if json.load(censor_text(member.name).text)['data']['conclusion'] != "不合规":
-        if wake_check(saying.asDisplay(), readme.functions["wakeup"]["keys"]):
+    if wake_check(saying.asDisplay(), readme.functions["wakeup"]["keys"]):
+        name_check = json.loads(censor_text(member.name))
+        if name_check['data']['conclusion'] != "不合规":
             if member.id in sleepList:
                 sleep_time = time.strftime("%H小时%M分钟%S秒", time.gmtime(time.time() - sleepList[member.id]))
                 del_cache(member.id)
@@ -101,9 +101,7 @@ async def wakeup_handler(
                 await app.sendGroupMessage(group, MessageChain.create([
                     Plain(f"{member.name} 你没跟我说过你睡过觉啊？")]
                 ))
-    else:
-        await app.sendGroupMessage(group, MessageChain.create([
-            At(member.id), Plain("名字里含有",
-                                 json.load(censor_text(saying.asDisplay()).text)['data']['conclusion'],
-                                 "\n请更改！")]
-        ))
+        else:
+            await app.sendGroupMessage(group, MessageChain.create([
+                At(member.id), Plain(f"\n名字里含有{name_check['data']['data'][0]['msg']}\n请更改！")]
+            ))
