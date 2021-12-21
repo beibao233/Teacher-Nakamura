@@ -8,8 +8,8 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.application.event.messages import Group, GroupMessage
 from graia.application.message.elements.internal import Plain, MessageChain, At
 
+from config.BFM_config import yaml_data
 from tool.callcheck import wake_check
-from tool.ALAPI import censor_text
 from saya import Including
 
 
@@ -64,20 +64,14 @@ async def sleep_handler(
         saying: MessageChain
 ):
     if wake_check(saying.asDisplay(), readme.functions["sleep"]["keys"]):
-        name_check = json.loads(censor_text(member.name))
-        if name_check['data']['conclusion'] != "不合规":
-            if member.id in sleepList:
-                await app.sendGroupMessage(group, MessageChain.create([
-                    Plain(f"你怎么还没去睡觉？ {member.name}")]
-                ))
-            else:
-                write_cache(number=member.id, data=time.time())
-                await app.sendGroupMessage(group, MessageChain.create([
-                    Plain(f"晚安 {member.name}")]
-                ))
-        else:
+        if member.id in sleepList:
             await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"\n名字里含有{name_check['data']['data'][0]['msg']}\n请更改！")]
+                Plain(f"你怎么还没去睡觉？ {member.name}")]
+            ))
+        else:
+            write_cache(number=member.id, data=time.time())
+            await app.sendGroupMessage(group, MessageChain.create([
+                Plain(f"晚安 {member.name}")]
             ))
 
 
@@ -89,19 +83,29 @@ async def wakeup_handler(
         saying: MessageChain
 ):
     if wake_check(saying.asDisplay(), readme.functions["wakeup"]["keys"]):
-        name_check = json.loads(censor_text(member.name))
-        if name_check['data']['conclusion'] != "不合规":
-            if member.id in sleepList:
-                sleep_time = time.strftime("%H小时%M分钟%S秒", time.gmtime(time.time() - sleepList[member.id]))
-                del_cache(member.id)
+        if member.id in sleepList:
+            sleep_time = time.time() - sleepList[member.id]
+            sleep_time_msg = time.strftime("%H小时%M分钟%S秒", time.gmtime(sleep_time))
+            del_cache(member.id)
+            if sleep_time < 900 and str(member.id) in sleepList:
                 await app.sendGroupMessage(group, MessageChain.create([
-                    Plain(f"醒了？{member.name} \n你睡了{sleep_time}")]
+                    Plain(f"{member.name}我怎么告诉你的？ 去找{yaml_data['Basic']['Permission']['MasterName']}把")]
+                ))
+            elif sleep_time < 900:
+                write_cache(number=str(member.id), data=time.time())
+                await app.sendGroupMessage(group, MessageChain.create([
+                    Plain(f"{member.name}你睡觉了咩？ 下次要是还这样我就不理你了。")]
+                ))
+            elif sleep_time > 86400:
+                write_cache(number=str(member.id), data=time.time())
+                await app.sendGroupMessage(group, MessageChain.create([
+                    Plain(f"{member.name}你是睡了一整天吗？下次要是还这样我就不理你了")]
                 ))
             else:
                 await app.sendGroupMessage(group, MessageChain.create([
-                    Plain(f"{member.name} 你没跟我说过你睡过觉啊？")]
+                    Plain(f"醒了？{member.name} \n你睡了{sleep_time_msg}")]
                 ))
         else:
             await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"\n名字里含有{name_check['data']['data'][0]['msg']}\n请更改！")]
+                Plain(f"{member.name} 你没跟我说过你睡过觉啊？")]
             ))
