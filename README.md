@@ -1,7 +1,8 @@
 <div align="center"><img src="https://z3.ax1x.com/2021/11/13/IrhHRH.png" alt="Icon" title="Icon" /><br><center style="color:gray">名字来自于《日常》里的中村加奈</center></div>
 
 # Teacher-Nakamura 中村老师
-
+# 已停止对 MAH-1 的支持！正在全线向MAH-2进发！
+ 
 ### 为什么选用中村老师做机器人？
 
 1. > 屠龙者终成恶龙
