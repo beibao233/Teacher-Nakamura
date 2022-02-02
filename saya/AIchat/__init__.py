@@ -1,9 +1,10 @@
-from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Saya, Channel
-from graia.application import GraiaMiraiApplication, Member
+from graia.ariadne.model import Member
+from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.application.event.messages import Group, GroupMessage
-from graia.application.message.elements.internal import Plain, MessageChain, Voice_LocalFile, At
+from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain, At
 
 from config.BFM_config import yaml_data
 from tool.TencentCloud.AI import talk
@@ -24,11 +25,10 @@ readme = Including(author=None, group="角色功能", functions={
 saya = Saya.current()
 channel = Channel.current()
 bcc = saya.broadcast
-inc = InterruptControl(bcc)
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def AIchat(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def AIchat(app: Ariadne, group: Group, message: MessageChain, member: Member):
     try:
         if message.getFirst(At).target == 2835692118:
             puremsg = message.asDisplay().replace("@2835692118 ", "", 1)

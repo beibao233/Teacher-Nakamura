@@ -1,11 +1,12 @@
 from graia.saya import Saya
-from graia.broadcast import Broadcast
-from graia.scheduler import GraiaScheduler
-from graia.broadcast.interrupt import InterruptControl
-from graia.scheduler.saya import GraiaSchedulerBehaviour
-from graia.application.exceptions import AccountNotFound
 from graia.saya.builtins.broadcast import BroadcastBehaviour
-from graia.application import GraiaMiraiApplication, Session
+from graia.scheduler.saya import GraiaSchedulerBehaviour
+from graia.broadcast import Broadcast
+from graia.broadcast.interrupt import InterruptControl
+from graia.scheduler import GraiaScheduler
+from graia.ariadne.model import MiraiSession
+from graia.ariadne.app import Ariadne
+from graia.ariadne.entry import AccountNotFound
 
 from config.BFM_config import yaml_data, save_config
 from tool import mirai
@@ -35,13 +36,12 @@ while True:
     time.sleep(5)
     try:
         requests.post(yaml_data['Basic']['MAH']['MiraiHost'])
-        app = GraiaMiraiApplication(
+        app = Ariadne(
             broadcast=bcc,
-            connect_info=Session(
-                host=yaml_data['Basic']['MAH']['MiraiHost'],
-                authKey=yaml_data['Basic']['MAH']['MiraiAuthKey'],
-                account=yaml_data['Basic']['MAH']['BotQQ'],
-                websocket=True
+            connect_info=MiraiSession(
+                host="http://localhost:8080",  # 填入 HTTP API 服务运行的地址
+                verify_key="ServiceVerifyKey",  # 填入 verifyKey
+                account=123456789,  # 你的机器人的 qq 号
             )
         )
         break

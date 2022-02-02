@@ -2,10 +2,12 @@ import ast
 import time
 
 from graia.saya import Saya, Channel
-from graia.application import GraiaMiraiApplication, Member
+from graia.ariadne.model import Member
+from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.application.event.messages import Group, GroupMessage
-from graia.application.message.elements.internal import Plain, MessageChain
+from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain
 
 from tool.callcheck import wake_check
 from saya import Including
@@ -56,7 +58,7 @@ def del_cache(number):
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def sleep_handler(
-        app: GraiaMiraiApplication,
+        app: Ariadne,
         group: Group,
         member: Member,
         saying: MessageChain
@@ -75,7 +77,7 @@ async def sleep_handler(
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def wakeup_handler(
-        app: GraiaMiraiApplication,
+        app: Ariadne,
         group: Group,
         member: Member,
         saying: MessageChain

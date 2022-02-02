@@ -2,7 +2,7 @@ Basic:
   BotName: 默认名字-请更改
   MAH:
     BotQQ: 数字-机器人QQ号
-    MiraiAuthKey: 字符串-MAH登录密钥
+    VerifyKey: 字符串-MAH登录密钥
     MiraiHost: http://localhost:8080
   MiraiPath: mirai/
   Permission:

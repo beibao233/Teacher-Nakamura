@@ -5,10 +5,12 @@ import httpx
 import random
 
 from graia.saya import Saya, Channel
-from graia.application import GraiaMiraiApplication, Member
+from graia.ariadne.model import Member
+from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.application.event.messages import Group, GroupMessage
-from graia.application.message.elements.internal import Plain, MessageChain, At
+from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain, At
 
 from tool.callcheck import wake_check
 from saya.CheckInControl import getCheckinList
@@ -60,7 +62,7 @@ channel = Channel.current()
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Member):
     if wake_check(message.asDisplay().strip(), readme.functions["ntgm"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n" + turn2good_bad(member.id))]
@@ -68,7 +70,7 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Member):
     if wake_check(message.asDisplay().strip(), readme.functions["jrrp"]["keys"]):
         if str(member.id) in getjrrplist():
             randint = getjrrplist()[str(member.id)]
@@ -86,7 +88,7 @@ async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def jrrpIn(app: GraiaMiraiApplication, group: Group, message: MessageChain):
+async def jrrpIn(app: Ariadne, group: Group, message: MessageChain):
     if wake_check(message.asDisplay(), readme.functions["EmperorList"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"欧皇榜：\n" + gentmsg4data(1) + "(仅显示前三)")]

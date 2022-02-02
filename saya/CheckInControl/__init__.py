@@ -1,11 +1,12 @@
 from graia.saya import Saya, Channel
-from graia.application import GraiaMiraiApplication, Member, Friend
+from graia.ariadne.model import Member
+from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.application.event.messages import Group, GroupMessage, FriendMessage
-from graia.application.message.elements.internal import Plain, MessageChain, At
+from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain, At
 
 from tool.callcheck import wake_check
-from config.BFM_config import yaml_data
 from saya import Including
 
 import time
@@ -34,7 +35,7 @@ channel = Channel.current()
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def CheckInFront(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def CheckInFront(app: Ariadne, group: Group, message: MessageChain, member: Member):
     if wake_check(message.asDisplay().strip(), readme.functions["CheckIn"]["keys"]):
         if checkIn(member.id, member.name) == "in":
             await app.sendGroupMessage(group, MessageChain.create([

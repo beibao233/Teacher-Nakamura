@@ -1,8 +1,9 @@
 from graia.saya import Saya, Channel
-from graia.application import GraiaMiraiApplication
+from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.application.event.messages import Group, GroupMessage
-from graia.application.message.elements.internal import Plain, MessageChain
+from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain
 
 from tool.callcheck import wake_check
 from tool.qqname import isaqqnum
@@ -31,7 +32,7 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def sick(
-        app: GraiaMiraiApplication,
+        app: Ariadne,
         group: Group,
         saying: MessageChain
 ):

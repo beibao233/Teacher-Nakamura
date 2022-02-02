@@ -1,9 +1,10 @@
-from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Saya, Channel
-from graia.application import GraiaMiraiApplication, Member
+from graia.ariadne.model import Member
+from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.application.event.messages import Group, GroupMessage
-from graia.application.message.elements.internal import Plain, MessageChain, At
+from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Plain, At
 
 from tool.callcheck import wake_check
 from config.BFM_config import yaml_data
@@ -27,7 +28,6 @@ readme = Including(author=None, group="基础功能", functions={
 saya = Saya.current()
 channel = Channel.current()
 bcc = saya.broadcast
-inc = InterruptControl(bcc)
 
 
 def help_msg(msg_start="帮助列表:"):
@@ -61,7 +61,7 @@ def help_msg(msg_start="帮助列表:"):
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def help_handler(app: GraiaMiraiApplication, group: Group, message: MessageChain, member: Member):
+async def help_handler(app: Ariadne, group: Group, message: MessageChain, member: Member):
     if wake_check(message.asDisplay().strip(), readme.functions["help"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n" + help_msg())]
