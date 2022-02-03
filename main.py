@@ -39,9 +39,9 @@ while True:
         app = Ariadne(
             broadcast=bcc,
             connect_info=MiraiSession(
-                host="http://localhost:8080",  # 填入 HTTP API 服务运行的地址
-                verify_key="ServiceVerifyKey",  # 填入 verifyKey
-                account=123456789,  # 你的机器人的 qq 号
+                host=yaml_data['Basic']['MAH']['MiraiHost'],
+                verify_key=yaml_data['Basic']['MAH']['VerifyKey'],
+                account=yaml_data['Basic']['MAH']['BotQQ']
             )
         )
         break
