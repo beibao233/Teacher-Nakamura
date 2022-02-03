@@ -44,27 +44,28 @@
    （在/config/net.mamoe.mirai-api-http/setting.yml）
    修改文件成
    ```yaml
-   adapters:
-     - http
-     - ws
-   debug: false
-   enableVerify: true
-   verifyKey: ServiceVerifyKey # 你可以自己设定, 这里作为示范
-   singleMode: false
-   cacheSize: 4096 # 可选, 缓存大小, 默认4096. 缓存过小会导致引用回复与撤回消息失败
-   adapterSettings:
-     ## 详情看 http adapter 使用说明 配置
-     http:
-       host: localhost
-       port: 8080 # 端口
-       cors: [*]
-   
-     ## 详情看 websocket adapter 使用说明 配置
-     ws:
-       host: localhost
-       port: 8080 # 端口
-       reservedSyncId: -1 # 确保为 -1, 否则 WebsocketAdapter(Experimental) 没法正常工作.
-   ```
+    adapters:
+      - http
+      - ws
+    debug: false
+    enableVerify: true
+    verifyKey: ServiceVerifyKey # 你可以自己设定, 这里作为示范
+    singleMode: false
+    cacheSize: 4096 # 可选, 缓存大小, 默认4096. 缓存过小会导致引用回复与撤回消息失败
+    adapterSettings:
+      ## 详情看 http adapter 使用说明 配置
+      http:
+        host: localhost
+        port: 8080 # 端口
+        cors: [*]
+    
+      ## 详情看 websocket adapter 使用说明 配置
+      ws:
+        host: localhost
+        port: 8080 # 端口
+        reservedSyncId: -1
+        ## 确保为 -1, 否则 WebsocketAdapter(Experimental) 没法正常工作.
+    ```
 
 5. 打开项目根目录下的 config 文件夹下的 config.yaml
 

@@ -8,7 +8,7 @@ from graia.ariadne.event.message import Group, GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, Image
 
-from PIL import Image
+from PIL import Image as Images
 
 from tool.callcheck import wake_check
 
@@ -39,13 +39,20 @@ with open('saya/InternetImageSender/member.yaml', 'r', encoding="utf-8") as f:
 whitelist_data = yaml.load(file_data, Loader=yaml.FullLoader)
 
 
+def image_to_byte_array(image: Images):
+    imgByteArr = io.BytesIO()
+    image.save(imgByteArr, format=image.format)
+    imgByteArr = imgByteArr.getvalue()
+    return imgByteArr
+
+
 def get_kemomimi(qq):
     if not (qq in whitelist_data['MemberBlackList']):
-        with io.BytesIO() as output:
-            data = Image.save(
+        data = Images.open(io.BytesIO(
                 requests.get(f"https://brx86.gitee.io/kemomimi/{str(random.randint(1, 581))}.jpg"
-                             ), format="JPG").content
-            return data
+                             ).content))
+        data = image_to_byte_array(data)
+        return data
     else:
         return False
 
@@ -61,7 +68,7 @@ async def xhl(
         data = get_kemomimi(member.id)
         if data is not False:
             await app.sendGroupMessage(group, MessageChain.create([
-                Image(data)
+                Image(data_bytes=data)
             ]))
         else:
             await app.sendGroupMessage(group, MessageChain.create([

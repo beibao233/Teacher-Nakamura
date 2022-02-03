@@ -1,12 +1,15 @@
 from graia.saya import Saya
-from graia.saya.builtins.broadcast import BroadcastBehaviour
-from graia.scheduler.saya import GraiaSchedulerBehaviour
+from graia.ariadne.app import Ariadne
 from graia.broadcast import Broadcast
-from graia.broadcast.interrupt import InterruptControl
 from graia.scheduler import GraiaScheduler
 from graia.ariadne.model import MiraiSession
-from graia.ariadne.app import Ariadne
+from graia.broadcast.interrupt import InterruptControl
+from graia.scheduler.saya import GraiaSchedulerBehaviour
+from graia.saya.builtins.broadcast import BroadcastBehaviour
+
 from graia.ariadne.entry import AccountNotFound
+
+from loguru import logger
 
 from config.BFM_config import yaml_data, save_config
 from tool import mirai
@@ -32,21 +35,14 @@ saya.install_behaviours(InterruptControl(bcc))
 
 mirai.start()
 
-while True:
-    time.sleep(5)
-    try:
-        requests.post(yaml_data['Basic']['MAH']['MiraiHost'])
-        app = Ariadne(
-            broadcast=bcc,
-            connect_info=MiraiSession(
-                host=yaml_data['Basic']['MAH']['MiraiHost'],
-                verify_key=yaml_data['Basic']['MAH']['VerifyKey'],
-                account=yaml_data['Basic']['MAH']['BotQQ']
-            )
-        )
-        break
-    except requests.exceptions.ConnectionError:
-        pass
+app = Ariadne(
+    broadcast=bcc,
+    connect_info=MiraiSession(
+        host=yaml_data['Basic']['MAH']['MiraiHost'],
+        verify_key=yaml_data['Basic']['MAH']['VerifyKey'],
+        account=yaml_data['Basic']['MAH']['BotQQ']
+    )
+)
 
 with saya.module_context():
     os.chdir(os.path.abspath(os.path.dirname(__file__)))
@@ -57,7 +53,8 @@ with saya.module_context():
             saya.require(f"saya.{module}")
         else:
             saya.require(f"saya.{module.split('.')[0]}")
-    app.logger.info("saya 加载完成")
+    logger.info("加载成功！")
+
 
 
 try:

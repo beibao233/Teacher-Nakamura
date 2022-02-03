@@ -11,3 +11,4 @@ tencentcloud-sdk-python
 graia-broadcast
 graia-ariadne
 Pillow
+loguru

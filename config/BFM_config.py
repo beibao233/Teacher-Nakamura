@@ -21,8 +21,8 @@ else:
     yaml_data = yaml.load(file_data, Loader=yaml.FullLoader)
 
 MIRAI_PATH = Path(yaml_data["Basic"]["MiraiPath"])
-VIOCE_PATH = MIRAI_PATH.joinpath("data", "net.mamoe.mirai-api-http", "voices")
-if not VIOCE_PATH.exists():
+CONFIG_PATH = MIRAI_PATH.joinpath("config", "net.mamoe.mirai-api-http")
+if not CONFIG_PATH.exists():
     print(f"请修改配置文件中的 Basic-MiraiPath 为Mirai的根目录")
     exit()
 
