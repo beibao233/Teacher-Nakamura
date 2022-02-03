@@ -1,14 +1,14 @@
 httpx==0.19.0
 websocket-client==1.1.1
-saya==0.3.10
+graia-saya==0.0.14
 httpx==0.19.0
 jieba==0.39
 zhon==1.1.5
 pyyaml==5.4.1
 pathlib==1.0.1
 requests==2.12.1
+graia-broadcast==0.15.2
 tencentcloud-sdk-python
 graia-broadcast
 graia-ariadne
 Pillow
-loguru

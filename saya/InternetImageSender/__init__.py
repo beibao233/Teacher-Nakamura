@@ -108,10 +108,12 @@ async def send_image_from_group_of_file(
     for _ in Key2Images:
         if not (member.id in whitelist_data['MemberBlackList']):
             if wake_check(saying.asDisplay(), readme.functions[Key2Images[_]]["keys"]):
-                images_number = len(os.listdir(f"{__file__}/{_}")) - 1
-            await app.sendGroupMessage(group, MessageChain.create([
-                Image(file=f"{__file__}/{_}/{random.randint(1,images_number)}.JPG")
-            ]))
+                images_number = len(os.listdir(f"{__file__.replace('__init__.py','')}{_}")) - 1
+                smalldn = Images.open(
+                        f"{__file__.replace('__init__.py','')}{_}\\{random.randint(1,images_number)}.JPG")
+                await app.sendGroupMessage(group, MessageChain.create([
+                    Image(data_bytes=image_to_byte_array(smalldn))
+                ]))
         else:
             await app.sendGroupMessage(group, MessageChain.create([
                 Plain(f"您没有权限，抱歉！")]
