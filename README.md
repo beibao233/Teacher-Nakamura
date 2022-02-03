@@ -29,12 +29,8 @@
 
 1. 本项目支持自动带起<a href="https://github.com/iTXTech/mirai-console-loader">Mirai Console Loader</a>，使用<a href="https://github.com/iTXTech/mcl-installer">iTXTech MCL Installer</a>在您设定的Mirai根目录下安装MCL（默认路径为 /mirai ）
 
-2. 在启动Mirai Console Loader后输入以下指令安装Mirai-Api-http最新版
-   
-   ```
-   ./mcl --update-package net.mamoe:mirai-api-http --channel stable-v2 --type plugin
-   ./mcl -u
-   ```
+2. 在启动Mirai Console Loader后下载<a href="https://github.com/project-mirai/mirai-api-http">Mirai-Http-API</a>最新版
+   放在MCL安装目录下的plugins文件中
    
 3. 使用如下的指令在MCL中设置你您的机器人登录
 
