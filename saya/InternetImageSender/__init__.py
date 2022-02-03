@@ -16,6 +16,7 @@ import yaml
 import requests
 import random
 import io
+import os
 
 
 saya = Saya.current()
@@ -31,12 +32,33 @@ readme = Including(author=None, group="基础功能", functions={
             "hl",
             "狐狸",
             "小狐狸"
+        ]},
+    "xdn": {
+        "describe": "随机小豆泥表情包",
+        "show": True,
+        "keys": [
+            "xdn",
+            "gxdn",
+            "dn",
+            "豆泥",
+            "小豆泥"
         ]}
 })
 
+# Get Whitelist data from file.
 with open('saya/InternetImageSender/member.yaml', 'r', encoding="utf-8") as f:
     file_data = f.read()
 whitelist_data = yaml.load(file_data, Loader=yaml.FullLoader)
+
+# Get LocalImagesList and make it useful.
+with open('saya/InternetImageSender/images.yaml', 'r', encoding="utf-8") as f:
+    file_data = f.read()
+images_name_data = yaml.load(file_data, Loader=yaml.FullLoader)
+
+Key2Images = {}
+
+for _ in images_name_data["NameOTImage"]:
+    Key2Images[_] = images_name_data["NameOTImage"][_]["KeyFrom"]
 
 
 def image_to_byte_array(image: Images):
@@ -74,3 +96,24 @@ async def xhl(
             await app.sendGroupMessage(group, MessageChain.create([
                 Plain(f"您没有权限，抱歉！")]
             ))
+
+
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def send_image_from_group_of_file(
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        saying: MessageChain
+):
+    for _ in Key2Images:
+        if not (member.id in whitelist_data['MemberBlackList']):
+            if wake_check(saying.asDisplay(), readme.functions[Key2Images[_]]["keys"]):
+                images_number = len(os.listdir(f"{__file__}/{_}")) - 1
+            await app.sendGroupMessage(group, MessageChain.create([
+                Image(file=f"{__file__}/{_}/{random.randint(1,images_number)}.JPG")
+            ]))
+        else:
+            await app.sendGroupMessage(group, MessageChain.create([
+                Plain(f"您没有权限，抱歉！")]
+            ))
+            break
