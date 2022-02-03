@@ -10,8 +10,8 @@ from tool.callcheck import wake_check
 from saya import Including
 
 import time
-import ast
-
+import yaml
+import atexit
 
 # Self-Including
 readme = Including(author=None, group="基础功能", functions={
@@ -25,6 +25,11 @@ readme = Including(author=None, group="基础功能", functions={
                 ]
             }
         })
+
+
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True
 
 
 checkinlist = {}
@@ -60,8 +65,6 @@ def checkInAction(action, key, num):
         data['name'] = checkinlist[key]['name']
         data['day'] = checkinlist[key]['day']
         checkinlist[key] = data
-        with open("saya/CheckInControl/checkin.txt", "w+", encoding="utf-8") as f:
-            f.write(str(checkinlist))
     elif action == "add":
         data["ltime"] = checkinlist[key]["ltime"]
         data['timestrip'] = checkinlist[key]['timestrip']
@@ -69,8 +72,6 @@ def checkInAction(action, key, num):
         data['name'] = checkinlist[key]['name']
         data['day'] = checkinlist[key]['day']
         checkinlist[key] = data
-        with open("saya/CheckInControl/checkin.txt", "w+", encoding="utf-8") as f:
-            f.write(str(checkinlist))
     return checkinlist
 
 
@@ -81,8 +82,6 @@ def checkIn(key, name):
                     'num': checkinlist[key]['num'] + 1, 'name': name,
                     'day': time.strftime("%d", time.localtime(time.time()))}
             checkinlist[key] = data
-            with open("saya/CheckInControl/checkin.txt", "w+", encoding="utf-8") as f:
-                f.write(str(checkinlist))
             return checkinlist
         else:
             return "in"
@@ -94,8 +93,6 @@ def checkIn(key, name):
         data['name'] = name
         data['day'] = time.strftime("%d", time.localtime(time.time()))
         checkinlist[key] = data
-        with open("saya/CheckInControl/checkin.txt", "w+", encoding="utf-8") as f:
-            f.write(str(checkinlist))
         return checkinlist
 
 
@@ -107,6 +104,14 @@ def getCheckinList():
     return checkinlist
 
 
+@atexit.register
+def save_config():
+    print(checkinlist)
+    with open("config/config.yaml", 'w', encoding="utf-8") as f:
+        yaml.dump(checkinlist, f, allow_unicode=True, Dumper=NoAliasDumper)
+
+
 if checkinlist == {}:
-    with open("saya/CheckInControl/checkin.txt", "r", encoding="utf-8") as f:
-        checkinlist = ast.literal_eval(f.read())
+    with open("saya/CheckInControl/checkin.yaml", "r", encoding="utf-8") as f:
+        file_data = f.read()
+        checkinlist = yaml.load(file_data, Loader=yaml.FullLoader)
