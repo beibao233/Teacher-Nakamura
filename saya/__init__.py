@@ -100,4 +100,4 @@ for plugin in real_plugins():
     # Check the plugins readme
     if not inspection_check(plugin, data.group, data.functions, data.author):
         add_plugin_readme(plugin, data.group, data.functions, data.author)
-        # remove_readme()
+        remove_readme()
