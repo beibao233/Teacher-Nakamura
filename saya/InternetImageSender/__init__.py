@@ -15,6 +15,7 @@ from tool.callcheck import wake_check
 import yaml
 import requests
 import random
+import json
 import io
 import os
 
@@ -42,7 +43,19 @@ readme = Including(author=None, group="基础功能", functions={
             "dn",
             "豆泥",
             "小豆泥"
-        ]}
+        ]},
+    "yxm": {
+        "describe": "随机可爱猫猫",
+        "show": True,
+        "keys": [
+            "猫猫",
+            "mm",
+            "yxm",
+            "m",
+            "猫",
+            "吸猫",
+            "xm"
+        ]},
 })
 
 # Get Whitelist data from file.
@@ -79,6 +92,17 @@ def get_kemomimi(qq):
         return False
 
 
+def get_cute_cats(qq):
+    if not (qq in whitelist_data['MemberBlackList']):
+        data = Images.open(io.BytesIO(
+            requests.get(json.loads(requests.get(f"https://api.thecatapi.com/v1/images/search").text)[0]["url"]).content
+        ))
+        data = image_to_byte_array(data)
+        return data
+    else:
+        return False
+
+
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def xhl(
         app: Ariadne,
@@ -88,6 +112,25 @@ async def xhl(
 ):
     if wake_check(saying.asDisplay(), readme.functions["xhl"]["keys"]):
         data = get_kemomimi(member.id)
+        if data is not False:
+            await app.sendGroupMessage(group, MessageChain.create([
+                Image(data_bytes=data)
+            ]))
+        else:
+            await app.sendGroupMessage(group, MessageChain.create([
+                Plain(f"您没有权限，抱歉！")]
+            ))
+
+
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def yxm(
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        saying: MessageChain
+):
+    if wake_check(saying.asDisplay(), readme.functions["yxm"]["keys"]):
+        data = get_cute_cats(member.id)
         if data is not False:
             await app.sendGroupMessage(group, MessageChain.create([
                 Image(data_bytes=data)
