@@ -73,6 +73,7 @@ async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Memb
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Member):
+    save_config()
     if wake_check(message.asDisplay().strip(), readme.functions["jrrp"]["keys"]):
         if str(member.id) in getjrrplist():
             randint = getjrrplist()[str(member.id)]
@@ -102,6 +103,7 @@ async def jrrpIn(app: Ariadne, group: Group, message: MessageChain):
 
 
 def turn2good_bad(qq):
+    save_config()
     try:
         rp = getjrrplist()[str(qq)]
     except KeyError:
@@ -231,7 +233,6 @@ class NoAliasDumper(yaml.SafeDumper):
 
 @atexit.register
 def save_config():
-    print(jrrplist)
     with open(f"{__file__.replace('__init__.py','')}jrrpdata.yaml", 'w', encoding="utf-8") as f:
         yaml.dump(jrrplist, f, allow_unicode=True, Dumper=NoAliasDumper)
 
