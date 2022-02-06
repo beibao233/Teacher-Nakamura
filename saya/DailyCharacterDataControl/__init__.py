@@ -1,8 +1,10 @@
 import datetime
 import threading
-import ast
 import httpx
+import ast
 import random
+import yaml
+import atexit
 
 from graia.saya import Saya, Channel
 from graia.ariadne.model import Member
@@ -134,8 +136,9 @@ def getjrrpfromfile():
     (character data stand for 人品)
     :return: list with character data
     """
-    with open("saya/DailyCharacterDataControl/jrrpdata.txt", "r", encoding='UTF-8') as f:
-        jrrplist = ast.literal_eval(f.read())
+    with open(f"{__file__.replace('__init__.py','')}jrrpdata.yaml", "r", encoding='UTF-8') as f:
+        file_data = f.read()
+        jrrplist = yaml.load(file_data, Loader=yaml.FullLoader)
     return jrrplist
 
 
@@ -168,8 +171,6 @@ def clearjrrplist():
     :return: None
     """
     jrrplist.clear()
-    with open("saya/DailyCharacterDataControl/jrrpdata.txt", "w+", encoding='UTF-8') as f:
-        f.write("{}")
     timer = threading.Timer(gettime(), clearjrrplist)
     timer.start()
 
@@ -182,8 +183,6 @@ def addjrrplist(key, num):
     :return: None
     """
     jrrplist[key] = num
-    with open("saya/DailyCharacterDataControl/jrrpdata.txt", "w+") as f:
-        f.write(str(jrrplist))
 
 
 def gensortedjrrplist():
@@ -191,7 +190,7 @@ def gensortedjrrplist():
     generate the sorted character data list (character data stand for 人品)
     :return: sorted jrrp list
     """
-    jrrpList = getjrrpfromfile()
+    jrrpList = getjrrplist()
     sortedJrrpList = sorted(jrrpList.items(), key=lambda kv: (kv[1], kv[0]))
     return sortedJrrpList
 
@@ -212,7 +211,7 @@ def gentmsg4data(mode=0):
                 r += 1
                 msg = msg.replace("{name}",
                                   ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0]).text)["data"][
-                                      "name"]).replace("{jrrp}", str(getjrrpfromfile()[keys[0]]))
+                                      "name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
         return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
     elif mode != 0:
         for keys in reversed(gensortedjrrplist()):
@@ -221,8 +220,20 @@ def gentmsg4data(mode=0):
                 r += 1
                 msg = msg.replace("{name}",
                                   ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0]).text)["data"][
-                                      "name"]).replace("{jrrp}", str(getjrrpfromfile()[keys[0]]))
+                                      "name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
         return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
+
+
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True
+
+
+@atexit.register
+def save_config():
+    print(jrrplist)
+    with open(f"{__file__.replace('__init__.py','')}jrrpdata.yaml", 'w', encoding="utf-8") as f:
+        yaml.dump(jrrplist, f, allow_unicode=True, Dumper=NoAliasDumper)
 
 
 timer = threading.Timer(gettime(), clearjrrplist)
