@@ -7,7 +7,8 @@ def wake_check(text, checklist):
             if i.replace("_", "") == text:
                 return True
 
-        if i == text.replace(yaml_data["Basic"]["WakeText"], "")\
-                and text.startswith(yaml_data["Basic"]["WakeText"]):
-            return True
+        for _ in yaml_data["Basic"]["WakeText"]:
+            if i == text.replace(_, "")\
+                    and text.startswith(_):
+                return True
 
