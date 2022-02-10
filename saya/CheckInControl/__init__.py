@@ -57,6 +57,13 @@ async def CheckInFront(app: Ariadne, group: Group, message: MessageChain, member
 
 
 def checkInAction(action, key, num):
+    """
+    Use to change data in check in list
+    :param action: delete/add
+    :param key: qq id
+    :param num: how much you wanna change
+    :return: changed checkinlist
+    """
     data = {}
     if action == "delete":
         data["ltime"] = checkinlist[key]["ltime"]

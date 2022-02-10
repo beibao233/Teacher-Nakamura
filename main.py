@@ -14,13 +14,8 @@ from loguru import logger
 from config.BFM_config import yaml_data, save_config
 from tool import mirai
 
-import time
 import os
 import asyncio
-import requests
-
-
-print(os.path.abspath(os.path.dirname(__file__)))
 
 
 loop = asyncio.get_event_loop()
