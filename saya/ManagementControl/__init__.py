@@ -77,7 +77,7 @@ async def leave_office(
         member: Member,
         saying: MessageChain
 ):
-    data = wake_check_var(saying.asDisplay(), readme.functions["appointment"]["keys"])
+    data = wake_check_var(saying.asDisplay(), readme.functions["LeaveOffice"]["keys"])
     if data is not False and member.id == yaml_data["Basic"]["Permission"]["Master"]:
         if data != "":
             yaml_data["Basic"]["Permission"]["Admin"].remove(int(data))
