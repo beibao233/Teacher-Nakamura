@@ -10,6 +10,7 @@ from config.BFM_config import yaml_data
 from tool.mirai import restart
 from tool.callcheck import wake_check
 from saya import Including
+from saya.ManagementControl import admins
 
 import threading
 import datetime
@@ -52,14 +53,14 @@ def gettime():
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def send_image_from_group_of_file(
+async def reboot_handler(
         app: Ariadne,
         group: Group,
         member: Member,
         saying: MessageChain
 ):
     if wake_check(saying.asDisplay(), readme.functions["ForceRestart"]["keys"]):
-        if member.id in yaml_data["Basic"]["Admin"]:
+        if member.id in admins():
             if restart():
                 await app.sendGroupMessage(group, MessageChain.create([
                     At(member.id), Plain(f"如果您能看到这段话说明已经成功重启！")]

@@ -25,8 +25,16 @@ readme = Including(author=None, group="管理功能", functions={
             "adda",
             "任命"
         ]},
+    "LeaveOffice": {
+        "describe": f"移除一个人为{yaml_data['Basic']['BotName']}管理",
+        "show": True,
+        "keys": [
+            "lo",
+            "leaveoffice",
+            "卸任"
+        ]},
     "clear": {
-        "describe": f"清屏",
+        "describe": "清屏",
         "show": True,
         "keys": [
             "clear",
@@ -50,11 +58,31 @@ async def appointment(
         saying: MessageChain
 ):
     data = wake_check_var(saying.asDisplay(), readme.functions["appointment"]["keys"])
-    if data is str and member.id in admins():
+    if data is not False and member.id == yaml_data["Basic"]["Permission"]["Master"]:
         if data != "":
             yaml_data["Basic"]["Permission"]["Admin"].append(int(data))
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"添加成功!")]
+            ))
+        else:
+            await app.sendGroupMessage(group, MessageChain.create([
+                At(member.id), Plain(f"请检查语法！")]
+            ))
+
+
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def leave_office(
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        saying: MessageChain
+):
+    data = wake_check_var(saying.asDisplay(), readme.functions["appointment"]["keys"])
+    if data is not False and member.id == yaml_data["Basic"]["Permission"]["Master"]:
+        if data != "":
+            yaml_data["Basic"]["Permission"]["Admin"].remove(int(data))
+            await app.sendGroupMessage(group, MessageChain.create([
+                At(member.id), Plain(f"移除成功!")]
             ))
         else:
             await app.sendGroupMessage(group, MessageChain.create([
