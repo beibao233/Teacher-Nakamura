@@ -59,12 +59,12 @@ async def appointment(
 ):
     data = wake_check_var(saying.asDisplay(), readme.functions["appointment"]["keys"])
     if data is not False and member.id == yaml_data["Basic"]["Permission"]["Master"]:
-        if data != "":
+        try:
             yaml_data["Basic"]["Permission"]["Admin"].append(int(data))
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"添加成功!")]
             ))
-        else:
+        except:
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"请检查语法！")]
             ))
@@ -79,12 +79,12 @@ async def leave_office(
 ):
     data = wake_check_var(saying.asDisplay(), readme.functions["LeaveOffice"]["keys"])
     if data is not False and member.id == yaml_data["Basic"]["Permission"]["Master"]:
-        if data != "":
+        try:
             yaml_data["Basic"]["Permission"]["Admin"].remove(int(data))
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"移除成功!")]
             ))
-        else:
+        except:
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"请检查语法！")]
             ))
