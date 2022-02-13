@@ -83,7 +83,7 @@ async def prejrrpedhandler(app: Ariadne, friend: Friend, message: MessageChain):
     data = wake_check_var(message.asDisplay(), readme.functions["PreAddJrrp"]["keys"])
     if friend.id in admins() and data is not False:
         if len(data.split()) == 2:
-            prejrrplist[data.split()[0]] = data.split()[1]
+            prejrrplist[data.split()[0]] = int(data.split()[1])
             timer4p = threading.Timer(gettime()+1, addplanedjrrp)
             timer4p.start()
             await app.sendFriendMessage(friend, MessageChain.create([
