@@ -2,7 +2,7 @@ from graia.saya import Saya, Channel
 from graia.ariadne.model import Member
 from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.event.message import Group, GroupMessage, Friend, FriendMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 
@@ -31,7 +31,7 @@ channel = Channel.current()
 bcc = saya.broadcast
 
 
-def main_genereator(groups: dict, black_groups=None, msg_start="帮助列表:"):
+def main_genereator(groups: dict, black_groups=None, msg_start="帮助列表:", show=False):
     if black_groups is None:
         black_groups = []
 
@@ -40,7 +40,7 @@ def main_genereator(groups: dict, black_groups=None, msg_start="帮助列表:"):
             msg_start += f"\n——————{_}——————"
             for gs in groups[_]:
                 for _ in yaml_data["Saya"][gs]['Functions']:
-                    if yaml_data["Saya"][gs]['Functions'][_]["show"]:
+                    if yaml_data["Saya"][gs]['Functions'][_]["show"] or show:
                         if yaml_data["Saya"][gs]['Functions'][_]["keys"][0].startswith("_"):
                             if yaml_data["Saya"][gs]['Functions'][_]["keys"][0] == "_AT":
                                 msg_start += f"\n@{yaml_data['Basic']['BotName']}: " + \
@@ -56,7 +56,7 @@ def main_genereator(groups: dict, black_groups=None, msg_start="帮助列表:"):
     return msg_start
 
 
-def help_msg(permid: int, groups=None):
+def help_msg(permid: int,where="Group" ,groups=None):
     if groups is None:
         groups = {}
 
@@ -68,8 +68,10 @@ def help_msg(permid: int, groups=None):
 
     if not (permid in admins()):
         message = main_genereator(groups=groups, black_groups=["后端功能", "管理功能"])
-    else:
+    elif where != "FRIEND":
         message = main_genereator(groups=groups)
+    else:
+        message = main_genereator(groups=groups, show=True)
 
     return message
 
@@ -79,4 +81,12 @@ async def help_handler(app: Ariadne, group: Group, message: MessageChain, member
     if wake_check(message.asDisplay().strip(), readme.functions["help"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n" + help_msg(member.id))]
+        ))
+
+
+@channel.use(ListenerSchema(listening_events=[FriendMessage]))
+async def help_handler(app: Ariadne, friend: Friend, message: MessageChain):
+    if wake_check(message.asDisplay().strip(), readme.functions["help"]["keys"]):
+        await app.sendFriendMessage(friend, MessageChain.create([
+            Plain(help_msg(friend.id, where="FRIEND"))]
         ))

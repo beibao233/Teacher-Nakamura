@@ -10,13 +10,14 @@ from graia.saya import Saya, Channel
 from graia.ariadne.model import Member
 from graia.ariadne.app import Ariadne
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from graia.ariadne.event.message import Group, GroupMessage
+from graia.ariadne.event.message import Group, GroupMessage, Friend, FriendMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 
-from tool.callcheck import wake_check
+from tool.callcheck import wake_check, wake_check_var
 from saya.CheckInControl import getCheckinList
 from saya.CheckInControl import checkInAction
+from saya.ManagementControl import admins
 from saya import Including
 
 # Self-Including
@@ -55,16 +56,47 @@ readme = Including(author=None, group="人品功能", functions={
                     "fqb",
                     "非酋榜",
                 ]
-            }
+            },
+            "PreAddJrrp": {
+                "describe": "提前添加一个人的人品\nQQ号 人品",
+                "show": False,
+                "keys": [
+                    "addjrrp",
+                    "aj",
+                ]
+            },
         })
 
 
 saya = Saya.current()
 channel = Channel.current()
 
+prejrrplist = {}
+
+with open(f"{__file__.replace('__init__.py','')}jrrpdata.yaml", "r", encoding='UTF-8') as f:
+    file_data = f.read()
+    jrrplist = yaml.load(file_data, Loader=yaml.FullLoader)
+
+
+@channel.use(ListenerSchema(listening_events=[FriendMessage]))
+async def prejrrpedhandler(app: Ariadne, friend: Friend, message: MessageChain):
+    data = wake_check_var(message.asDisplay(), readme.functions["PreAddJrrp"]["keys"])
+    if friend.id in admins() and data is not False:
+        if len(data.split()) == 2:
+            prejrrplist[data.split()[0]] = data.split()[1]
+            timer4p = threading.Timer(gettime()+1, addplanedjrrp)
+            timer4p.start()
+            await app.sendFriendMessage(friend, MessageChain.create([
+                Plain("添加成功")]
+            ))
+        else:
+            await app.sendFriendMessage(friend, MessageChain.create([
+                Plain("请检查语法")]
+            ))
+
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Member):
+async def ntgmhanlder(app: Ariadne, group: Group, message: MessageChain, member: Member):
     if wake_check(message.asDisplay().strip(), readme.functions["ntgm"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             At(member.id), Plain(f"\n" + turn2good_bad(member.id))]
@@ -91,7 +123,7 @@ async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Memb
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def jrrpIn(app: Ariadne, group: Group, message: MessageChain):
+async def jrrp_list0all(app: Ariadne, group: Group, message: MessageChain):
     if wake_check(message.asDisplay(), readme.functions["EmperorList"]["keys"]):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"欧皇榜：\n" + gentmsg4data(1) + "(仅显示前三)")]
@@ -100,6 +132,11 @@ async def jrrpIn(app: Ariadne, group: Group, message: MessageChain):
         await app.sendGroupMessage(group, MessageChain.create([
             Plain(f"非酋榜：\n" + gentmsg4data(0) + "(仅显示前三)")]
         ))
+
+
+def addplanedjrrp():
+    for _ in prejrrplist.keys():
+        addjrrplist(_, prejrrplist[_])
 
 
 def turn2good_bad(qq):
@@ -142,9 +179,6 @@ def getjrrpfromfile():
         file_data = f.read()
         jrrplist = yaml.load(file_data, Loader=yaml.FullLoader)
     return jrrplist
-
-
-jrrplist = getjrrpfromfile()
 
 
 def gettime():
@@ -212,8 +246,8 @@ def gentmsg4data(mode=0):
                 msg = msg + "{}{name} 人品：{jrrp}\n"
                 r += 1
                 msg = msg.replace("{name}",
-                                  ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0]).text)["data"][
-                                      "name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
+                                  ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0], verify=False).text)
+                                  ["data"]["name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
         return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
     elif mode != 0:
         for keys in reversed(gensortedjrrplist()):
@@ -221,8 +255,8 @@ def gentmsg4data(mode=0):
                 msg = msg + "{}{name} 人品：{jrrp}\n"
                 r += 1
                 msg = msg.replace("{name}",
-                                  ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0]).text)["data"][
-                                      "name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
+                                  ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0], verify=False).text)
+                                  ["data"]["name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
         return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
 
 
@@ -234,7 +268,7 @@ class NoAliasDumper(yaml.SafeDumper):
 @atexit.register
 def save_config():
     with open(f"{__file__.replace('__init__.py','')}jrrpdata.yaml", 'w', encoding="utf-8") as f:
-        yaml.dump(jrrplist, f, allow_unicode=True, Dumper=NoAliasDumper)
+        yaml.dump(getjrrplist(), f, allow_unicode=True, Dumper=NoAliasDumper)
 
 
 timer = threading.Timer(gettime(), clearjrrplist)
