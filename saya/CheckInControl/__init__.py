@@ -114,7 +114,7 @@ def getCheckinList():
 @atexit.register
 def save_config():
     print(checkinlist)
-    with open("config/config.yaml", 'w', encoding="utf-8") as f:
+    with open("saya/CheckInControl/checkin.yaml", 'w', encoding="utf-8") as f:
         yaml.dump(checkinlist, f, allow_unicode=True, Dumper=NoAliasDumper)
 
 
