@@ -1,5 +1,6 @@
 import sqlite3
 import atexit
+from loguru import logger
 
 udb = sqlite3.connect(f"{__file__.replace('__init__.py','')}database.db")
 uc = udb.cursor()
@@ -12,12 +13,12 @@ try:
            Coins         INT                        NOT NULL,
            Level         INT                        NOT NULL,
            Favor         INT                        NOT NULL,
-           Birthday      INT                        NOT NULL
+           Birthday      TEXT                       NOT NULL
            );''')
     udb.commit()
-    print("未检到用户数据表！已创建！")
+    logger.info("未检到用户数据表！已创建！")
 except sqlite3.OperationalError:
-    print("用户数据表检查成功！")
+    logger.info("用户数据表检查成功！")
 
 # PRISM
 
@@ -26,12 +27,12 @@ mc = mdb.cursor()
 
 
 class Member:
-    def __init__(self, uid: int, name: str, gender: int, birthday: int,
+    def __init__(self, uid: int, name: str, gender: int, birthday: str,
                  coins: int = 0, level: int = 0, favor: int = 0, save: bool = True):
-        self.__name = name
-        self.__gender = gender
-        self.__birthday = birthday
-        self.__uid = uid
+        self.name = name
+        self.gender = gender
+        self.birthday = birthday
+        self.uid = uid
         self.__coins = coins
         self.__level = level
         self.__favor = favor
@@ -39,33 +40,36 @@ class Member:
         if save:
             uc.execute(f"INSERT INTO Member (UID,Name,Gender,Coins,Level,Favor,Birthday) \
                        VALUES (?, ?, ?, ?, ?, ?, ?)",
-                       (self.__uid, self.__name, self.__gender, self.__coins,
-                        self.__level, self.__favor, self.__birthday))
+                       (self.uid, self.name, self.gender, self.__coins,
+                        self.__level, self.__favor, self.birthday))
             udb.commit()
+
+    def get_coins(self):
+        return self.__coins
 
     def add_coin(self, coins: int):
         self.__coins += coins
-        uc.execute("UPDATE Member set Coins = ? where UID=?", (self.__coins, self.__uid))
+        uc.execute("UPDATE Member set Coins = ? where UID=?", (self.__coins, self.uid))
         udb.commit()
 
     def remove_coin(self, coins: int):
         self.__coins -= coins
-        uc.execute("UPDATE Member set Coins = ? where UID=?", (self.__coins, self.__uid))
+        uc.execute("UPDATE Member set Coins = ? where UID=?", (self.__coins, self.uid))
         udb.commit()
 
     def level_up(self):
         self.__level += 1
-        uc.execute("UPDATE Member set Level = ? where UID=?", (self.__coins, self.__uid))
+        uc.execute("UPDATE Member set Level = ? where UID=?", (self.__coins, self.uid))
         udb.commit()
 
     def favor_up(self, favor: int):
         self.__favor += favor
-        uc.execute("UPDATE Member set Favor = ? where UID=?", (self.__coins, self.__uid))
+        uc.execute("UPDATE Member set Favor = ? where UID=?", (self.__coins, self.uid))
         udb.commit()
 
     def favor_down(self, favor: int):
         self.__favor -= favor
-        uc.execute("UPDATE Member set Favor = ? where UID=?", (self.__coins, self.__uid))
+        uc.execute("UPDATE Member set Favor = ? where UID=?", (self.__coins, self.uid))
         udb.commit()
 
 
@@ -74,8 +78,8 @@ class LoadMember(Member):
         self.__uid = uid
         if self.exist(self.__uid):
             for row in uc.execute("SELECT * FROM Member WHERE ?", (uid,)):
-                super().__init__(uid=row[0], name=row[1], gender=row[2], coins=row[3], level=row[4], favor=row[5],
-                                 birthday=row[6])
+                super().__init__(uid=self.__uid, name=row[0], gender=row[1], coins=row[2], level=row[3], favor=row[4],
+                                 birthday=row[5], save=False)
 
     @staticmethod
     def exist(uid):

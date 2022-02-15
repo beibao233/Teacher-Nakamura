@@ -54,6 +54,8 @@ async def CheckInFront(app: Ariadne, group: Group, message: MessageChain, member
             await app.sendGroupMessage(group, MessageChain.create([
                 At(member.id), Plain(f"" + output)
             ]))
+    with open("saya/CheckInControl/checkin.yaml", 'w', encoding="utf-8") as f:
+        yaml.dump(checkinlist, f, allow_unicode=True, Dumper=NoAliasDumper)
 
 
 def checkInAction(action, key, num):
@@ -79,7 +81,8 @@ def checkInAction(action, key, num):
         data['name'] = checkinlist[key]['name']
         data['day'] = checkinlist[key]['day']
         checkinlist[key] = data
-    return checkinlist
+    with open("saya/CheckInControl/checkin.yaml", 'w', encoding="utf-8") as f:
+        yaml.dump(checkinlist, f, allow_unicode=True, Dumper=NoAliasDumper)
 
 
 def checkIn(key, name):
