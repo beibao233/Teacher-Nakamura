@@ -152,10 +152,14 @@ async def send_image_from_group_of_file(
         if not (member.id in whitelist_data['MemberBlackList']):
             if wake_check(saying.asDisplay(), readme.functions[Key2Images[_]]["keys"]):
                 images_number = len(os.listdir(f"{__file__.replace('__init__.py','')}{_}")) - 1
-                smalldn = Images.open(
-                        f"{__file__.replace('__init__.py','')}{_}\\{random.randint(1,images_number)}.JPG")
+                try:
+                    imb = Images.open(
+                            f"{__file__.replace('__init__.py','')}{_}\\{random.randint(1,images_number)}.JPG")
+                except:
+                    imb = Images.open(
+                        f"{__file__.replace('__init__.py', '')}{_}\\{random.randint(1, images_number)}.jpg")
                 await app.sendGroupMessage(group, MessageChain.create([
-                    Image(data_bytes=image_to_byte_array(smalldn))
+                    Image(data_bytes=image_to_byte_array(imb))
                 ]))
         else:
             await app.sendGroupMessage(group, MessageChain.create([
