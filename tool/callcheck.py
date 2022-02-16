@@ -31,3 +31,10 @@ def wake_check_var(text, checklist):
                 result = text.replace(i, "", 1).replace(_, "", 1)
                 return result
     return False
+
+
+def is_function_call(text):
+    for _ in yaml_data["Basic"]["WakeText"]:
+        if text.startswith(_):
+            return True
+    return False
