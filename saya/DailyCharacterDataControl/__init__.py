@@ -3,6 +3,8 @@ import threading
 import httpx
 import ast
 import random
+
+import requests
 import yaml
 import atexit
 
@@ -111,14 +113,17 @@ async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Memb
             randint = getjrrplist()[str(member.id)]
             msg = "您今天的人品为：{0}".format(randint)
             await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"\n" + msg)]
+                At(member.id), Plain(f"\n{msg}")]
             ))
         else:
             randint = random.randint(0, 100)
             addjrrplist(str(member.id), randint)
             msg = "您今天的人品为：{0}".format(randint)
+            gy = ""
+            if randint <= 60:
+                gy += f"\n每日一言: {requests.get('https://v1.hitokoto.cn/?encode=text', verify=False).text}"
             await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"\n" + msg)]
+                At(member.id), Plain(f"\n{msg}{gy}")]
             ))
 
 
