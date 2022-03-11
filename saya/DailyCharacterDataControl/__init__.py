@@ -1,10 +1,9 @@
 import datetime
 import threading
-import httpx
 import ast
 import random
 
-import requests
+import aiohttp
 import yaml
 import atexit
 
@@ -121,10 +120,12 @@ async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Memb
             msg = "您今天的人品为：{0}".format(randint)
             gy = ""
             if randint <= 60:
-                gy += f"\n每日一言: {requests.get('https://v1.hitokoto.cn/?encode=text', verify=False).text}"
-            await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"\n{msg}{gy}")]
-            ))
+                async with aiohttp.ClientSession() as session:
+                    async with session.get("https://v1.hitokoto.cn/?encode=text") as response:
+                        gy += f"\n每日一言: {response.text}"
+                        await app.sendGroupMessage(group, MessageChain.create([
+                            At(member.id), Plain(f"\n{msg}{gy}")]
+                        ))
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
@@ -245,24 +246,27 @@ def gentmsg4data(mode=0):
     """
     msg = ""
     r = 0
-    if mode == 0:
-        for keys in gensortedjrrplist():
-            if r < 3:
-                msg = msg + "{}{name} 人品：{jrrp}\n"
-                r += 1
-                msg = msg.replace("{name}",
-                                  ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0], verify=False).text)
-                                  ["data"]["name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
-        return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
-    elif mode != 0:
-        for keys in reversed(gensortedjrrplist()):
-            if r < 3:
-                msg = msg + "{}{name} 人品：{jrrp}\n"
-                r += 1
-                msg = msg.replace("{name}",
-                                  ast.literal_eval(httpx.get("https://api.usuuu.com/qq/" + keys[0], verify=False).text)
-                                  ["data"]["name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
-        return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
+    async with aiohttp.ClientSession() as session:
+        if mode == 0:
+            for keys in gensortedjrrplist():
+                if r < 3:
+                    msg = msg + "{}{name} 人品：{jrrp}\n"
+                    r += 1
+                    async with session.get(f"https://api.usuuu.com/qq/{keys[0]}") as response:
+                        msg = msg.replace("{name}",
+                                          ast.literal_eval(await response.text())
+                                          ["data"]["name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
+                return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
+        elif mode != 0:
+            for keys in reversed(gensortedjrrplist()):
+                if r < 3:
+                    async with session.get(f"https://api.usuuu.com/qq/{keys[0]}") as response:
+                        msg = msg + "{}{name} 人品：{jrrp}\n"
+                        r += 1
+                        msg = msg.replace("{name}",
+                                          ast.literal_eval(await response.text())
+                                          ["data"]["name"]).replace("{jrrp}", str(getjrrplist()[keys[0]]))
+            return msg.format(str(1) + ".", str(2) + ".", str(3) + ".")
 
 
 class NoAliasDumper(yaml.SafeDumper):

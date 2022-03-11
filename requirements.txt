@@ -10,4 +10,5 @@ requests==2.27.1
 tencentcloud-sdk-python
 graia-ariadne
 Pillow
+aiohttp
 loguru

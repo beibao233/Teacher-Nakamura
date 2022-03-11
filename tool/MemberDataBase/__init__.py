@@ -2,7 +2,7 @@ import sqlite3
 import atexit
 from loguru import logger
 
-udb = sqlite3.connect(f"{__file__.replace('__init__.py','')}database.db")
+udb = sqlite3.connect(f"{__file__.replace('__init__.py', '')}database.db")
 uc = udb.cursor()
 
 try:
@@ -22,7 +22,7 @@ except sqlite3.OperationalError:
 
 # PRISM
 
-mdb = sqlite3.connect(f"{__file__.replace('__init__.py','')}messages.db")
+mdb = sqlite3.connect(f"{__file__.replace('__init__.py', '')}messages.db")
 mc = mdb.cursor()
 
 
@@ -127,7 +127,74 @@ class Message(GroupsTable):
             mdb.commit()
 
 
+gbsdb = sqlite3.connect(f"{__file__.replace('__init__.py', '')}group_bilibili_sub.db")
+gbsc = gbsdb.cursor()
+
+
+class GroupsTableForBilibili:
+    def __init__(self, gid: str):
+        self.__gid = gid
+        gbsc.execute(f'''CREATE TABLE _{self.__gid}
+               (UpID          INT        PRIMARY KEY      NOT NULL,
+               Suber          INT        NOT NULL
+               );''')
+        gbsdb.commit()
+
+
+class GroupBilibiliSub(GroupsTableForBilibili):
+    def __init__(self, gid: int, up_id: int, suber: int, save: bool = True):
+        self.__gid = str(gid)
+        self.__UpID = up_id
+        self.__Suber = suber
+
+        try:
+            self.__mid = gbsdb.execute(f"SELECT COUNT(*) FROM _{self.__gid}").fetchone()[0] + 1
+
+            gbsc.execute(f"INSERT INTO _{self.__gid} (UpID, Suber) \
+                               VALUES (?, ?)",
+                         (self.__UpID, self.__Suber))
+            gbsdb.commit()
+        except sqlite3.OperationalError:
+            super().__init__(self.__gid)
+
+            self.__mid = gbsc.execute(f"SELECT COUNT(*) FROM _{self.__gid}").fetchone()[0] + 1
+
+            gbsc.execute(f"INSERT INTO _{self.__gid} (UpID, Suber) \
+                                           VALUES (?, ?)",
+                         (self.__UpID, self.__Suber))
+            gbsdb.commit()
+        except sqlite3.IntegrityError:
+            class UpFollowed(BaseException):
+                def __init__(self):
+                    super().__init__(self)  # 初始化父类
+                    self.errorinfo = "This Up is already been followed"
+
+                def __str__(self):
+                    return self.errorinfo
+
+                __module__ = 'builtins'
+            raise UpFollowed
+
+
+class LoadBilibiliSub:
+    def __init__(self, sublist=None, grouplist=None):
+        if sublist is None:
+            self.sublist = {}
+
+        if grouplist is None:
+            self.grouplist = []
+
+        for table in list(gbsc.execute("select name from sqlite_master where type='table' order by name;")):
+            if not table[0] in self.grouplist:
+                self.sublist[table[0]] = []
+
+            for row in gbsc.execute(f"SELECT * FROM {table[0]}"):
+                self.grouplist.append(table[0])
+                self.sublist[table[0]].append(row)
+
+
 @atexit.register
 def close_databases():
     udb.close()
     mdb.close()
+    gbsdb.close()
