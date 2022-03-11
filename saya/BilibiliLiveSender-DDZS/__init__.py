@@ -65,7 +65,7 @@ async def SendLiveOnMessage(app: Ariadne):
                         ApiResponse = json.loads(await response.text())
                         U_ApiResponse = json.loads(await U_response.text())
                         MessageOfLive = \
-                            f"UP主:{U_ApiResponse['data']['name']}" \
+                            f"UP主:{U_ApiResponse['data']['name']}\n" \
                             f"直播标题:{ApiResponse['data']['room_info']['title']}\n" \
                             f"直播链接:https://live.bilibili.com/{ApiResponse['data']['room_info']['room_id']}"
             await app.sendGroupMessage(int(list(LiveCurrentOn.keys())[0].replace("_", "")),
