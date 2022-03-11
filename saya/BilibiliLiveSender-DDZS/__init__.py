@@ -74,7 +74,7 @@ async def SendLiveOnMessage(app: Ariadne):
 
 @channel.use(ListenerSchema(listening_events=[ApplicationLaunched]))
 async def CheckLiveIsOn2Not(app: Ariadne):
-    timer = threading.Timer(300, CheckLiveIsOn2Not)
+    timer = threading.Timer(300, CheckLiveIsOn2Not(app=app))
     timer.start()
     if LoadBilibiliSub().sublist != {}:
         for SubData in LoadBilibiliSub().sublist:
