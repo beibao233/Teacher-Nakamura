@@ -1,3 +1,5 @@
+import sched
+
 from graia.saya import Saya, Channel
 from graia.ariadne.model import Member
 from graia.ariadne.app import Ariadne
@@ -6,12 +8,14 @@ from graia.ariadne.event.message import Group, GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.event.lifecycle import ApplicationLaunched
+from graia.scheduler.saya import SchedulerSchema
+from graia.scheduler import timers
 
 from tool.MemberDataBase import GroupBilibiliSub, LoadBilibiliSub
 from tool.callcheck import wake_check_var
 from saya import Including
 
-import threading
+import loguru
 import json
 import aiohttp
 
@@ -51,31 +55,11 @@ async def SubOneByUid(app: Ariadne, group: Group, message: MessageChain, member:
                     ]))
 
 
-async def SendLiveOnMessage(app: Ariadne):
-    for LiveCurrentOn in currentLive:
-        if LiveCurrentOn not in sentLive:
-            sentLive.append(LiveCurrentOn)
-            async with aiohttp.ClientSession() as session:
-                async with session.get(f"https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="
-                                       f"{LiveCurrentOn[list(LiveCurrentOn.keys())[0]]}",
-                                       ) as response:
-                    async with session.get(f"https://api.bilibili.com/x/space/acc/info?mid="
-                                           f"{json.loads(await response.text())['data']['room_info']['uid']}") as \
-                            U_response:
-                        ApiResponse = json.loads(await response.text())
-                        U_ApiResponse = json.loads(await U_response.text())
-                        MessageOfLive = \
-                            f"UP主:{U_ApiResponse['data']['name']}\n" \
-                            f"直播标题:{ApiResponse['data']['room_info']['title']}\n" \
-                            f"直播链接:https://live.bilibili.com/{ApiResponse['data']['room_info']['room_id']}"
-            await app.sendGroupMessage(int(list(LiveCurrentOn.keys())[0].replace("_", "")),
-                                       MessageChain.create(Plain(MessageOfLive)))
-
-
 @channel.use(ListenerSchema(listening_events=[ApplicationLaunched]))
-async def CheckLiveIsOn2Not(app: Ariadne):
-    timer = threading.Timer(300, CheckLiveIsOn2Not(app=app))
-    timer.start()
+@channel.use(SchedulerSchema(timer=timers.every_custom_minutes(5)))
+async def CheckAndSendLiveOnMessage(app: Ariadne):
+    loguru.logger.info("检查数据库中直播间并将正直播加入正直播列表！")
+
     if LoadBilibiliSub().sublist != {}:
         for SubData in LoadBilibiliSub().sublist:
             async with aiohttp.ClientSession() as session:
@@ -94,4 +78,23 @@ async def CheckLiveIsOn2Not(app: Ariadne):
                             pass
                         except TypeError:
                             pass
-    await SendLiveOnMessage(app=app)
+
+    loguru.logger.info("检查正直播列表并发送")
+    for LiveCurrentOn in currentLive:
+        if LiveCurrentOn not in sentLive:
+            sentLive.append(LiveCurrentOn)
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="
+                                       f"{LiveCurrentOn[list(LiveCurrentOn.keys())[0]]}",
+                                       ) as response:
+                    async with session.get(f"https://api.bilibili.com/x/space/acc/info?mid="
+                                           f"{json.loads(await response.text())['data']['room_info']['uid']}") as \
+                            U_response:
+                        ApiResponse = json.loads(await response.text())
+                        U_ApiResponse = json.loads(await U_response.text())
+                        MessageOfLive = \
+                            f"UP主:{U_ApiResponse['data']['name']}\n" \
+                            f"直播标题:{ApiResponse['data']['room_info']['title']}\n" \
+                            f"直播链接:https://live.bilibili.com/{ApiResponse['data']['room_info']['room_id']}"
+            await app.sendGroupMessage(int(list(LiveCurrentOn.keys())[0].replace("_", "")),
+                                       MessageChain.create(Plain(MessageOfLive)))

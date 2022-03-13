@@ -24,7 +24,7 @@
 
 ### 如何部署？
 
-0. 确保您的Python版本为3.8（其他版本未经测试可能有出现问题）
+0. 确保您的Python版本为3.9.10（其他版本未经测试可能有出现问题）
    使用pip install -r requirements.txt安装需求库
 
 1. 本项目支持自动带起<a href="https://github.com/iTXTech/mirai-console-loader">Mirai Console Loader</a>，使用<a href="https://github.com/iTXTech/mcl-installer">iTXTech MCL Installer</a>在您设定的Mirai根目录下安装MCL（默认路径为 /mirai ）

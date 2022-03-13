@@ -1,5 +1,3 @@
-graia-saya==0.0.14
-graia-broadcast==0.15.2
 httpx==0.22.0
 websocket-client==1.2.3
 jieba==0.42.1
@@ -7,8 +5,8 @@ zhon==1.1.5
 pyyaml==6.0
 pathlib==1.0.1
 requests==2.27.1
-tencentcloud-sdk-python
-graia-ariadne
-Pillow
-aiohttp
+tencentcloud-sdk-python==3.0.579
+graia-ariadne[graia]
+Pillow==9.0.1
+dnspython
 loguru
