@@ -1,5 +1,3 @@
-import sched
-
 from graia.saya import Saya, Channel
 from graia.ariadne.model import Member
 from graia.ariadne.app import Ariadne
@@ -10,6 +8,7 @@ from graia.ariadne.message.element import Plain, At
 from graia.ariadne.event.lifecycle import ApplicationLaunched
 from graia.scheduler.saya import SchedulerSchema
 from graia.scheduler import timers
+from graia.ariadne.exception import UnknownTarget
 
 from tool.MemberDataBase import GroupBilibiliSub, LoadBilibiliSub
 from tool.callcheck import wake_check_var
@@ -70,7 +69,7 @@ async def CheckAndSendLiveOnMessage(app: Ariadne):
                         try:
                             if json.loads(await response.text())["data"]["room_info"]["live_status"] == 1:
                                 if not SubData[0] in currentLive:
-                                    currentLive.append({SubData: SingleSubData[0]})
+                                    currentLive.append({SubData: SingleSubData})
                             else:
                                 currentLive.remove({SubData: SingleSubData})
                                 sentLive.remove({SubData: SingleSubData})
@@ -85,7 +84,7 @@ async def CheckAndSendLiveOnMessage(app: Ariadne):
             sentLive.append(LiveCurrentOn)
             async with aiohttp.ClientSession() as session:
                 async with session.get(f"https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="
-                                       f"{LiveCurrentOn[list(LiveCurrentOn.keys())[0]]}",
+                                       f"{LiveCurrentOn[list(LiveCurrentOn.keys())[0]][0]}",
                                        ) as response:
                     async with session.get(f"https://api.bilibili.com/x/space/acc/info?mid="
                                            f"{json.loads(await response.text())['data']['room_info']['uid']}") as \
@@ -98,3 +97,8 @@ async def CheckAndSendLiveOnMessage(app: Ariadne):
                             f"直播链接:https://live.bilibili.com/{ApiResponse['data']['room_info']['room_id']}"
             await app.sendGroupMessage(int(list(LiveCurrentOn.keys())[0].replace("_", "")),
                                        MessageChain.create(Plain(MessageOfLive)))
+            try:
+                await app.sendFriendMessage(LiveCurrentOn[list(LiveCurrentOn.keys())[0]][1],
+                                           MessageChain.create(Plain(MessageOfLive)))
+            except UnknownTarget:
+                pass
