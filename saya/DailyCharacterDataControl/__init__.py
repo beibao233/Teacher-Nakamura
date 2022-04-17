@@ -106,26 +106,28 @@ async def ntgmhanlder(app: Ariadne, group: Group, message: MessageChain, member:
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def jrrpIn(app: Ariadne, group: Group, message: MessageChain, member: Member):
-    save_config()
-    if wake_check(message.asDisplay().strip(), readme.functions["jrrp"]["keys"]):
-        if str(member.id) in getjrrplist():
-            randint = getjrrplist()[str(member.id)]
-            msg = "您今天的人品为：{0}".format(randint)
-            await app.sendGroupMessage(group, MessageChain.create([
-                At(member.id), Plain(f"\n{msg}")]
-            ))
-        else:
-            randint = random.randint(0, 100)
-            addjrrplist(str(member.id), randint)
-            msg = "您今天的人品为：{0}".format(randint)
-            gy = ""
-            if randint <= 60:
-                async with aiohttp.ClientSession() as session:
-                    async with session.get("https://v1.hitokoto.cn/?encode=text") as response:
-                        gy += f"\n每日一言: {response.text}"
-                        await app.sendGroupMessage(group, MessageChain.create([
-                            At(member.id), Plain(f"\n{msg}{gy}")]
-                        ))
+    async with aiohttp.ClientSession() as session:
+        save_config()
+        randint = random.randint(0, 100)
+        msg = "您今天的人品为：{0}".format(randint)
+        if wake_check(message.asDisplay().strip(), readme.functions["jrrp"]["keys"]):
+            if str(member.id) in getjrrplist():
+                msg = "您今天的人品为：{0}".format(getjrrplist()[str(member.id)])
+                await app.sendGroupMessage(group, MessageChain.create([
+                    At(member.id), Plain(f"\n{msg}")]
+                ))
+            elif randint <= 60:
+                addjrrplist(str(member.id), randint)
+                async with session.get("http://api.guaqb.cn/v1/onesaid/") as response:
+                    gy = "每日一言: " + await response.text()
+                    await app.sendGroupMessage(group, MessageChain.create([
+                        At(member.id), Plain(f"\n{msg}{gy}")]
+                    ))
+            else:
+                addjrrplist(str(member.id), randint)
+                await app.sendGroupMessage(group, MessageChain.create([
+                    At(member.id), Plain(f"\n{msg}")]
+                ))
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
@@ -161,9 +163,9 @@ def turn2good_bad(qq):
             checkInAction("delete", qq, 3)
             return "您今天的人品为：{0}".format(getjrrplist()[str(qq)])
         else:
-            return "您今天人品大于等于60\n无法逆天改命！"
+            return "您今天人品大于等于60\n无法逆天改命!"
     else:
-        return "您的签到次数小于三\n无法逆天改命！"
+        return "您的签到次数小于三\n无法逆天改命!"
 
 
 def getjrrplist():
@@ -237,7 +239,7 @@ def gensortedjrrplist():
     return sortedJrrpList
 
 
-def gentmsg4data(mode=0):
+async def gentmsg4data(mode=0):
     """
     generate the character data list msg (character data stand for 人品)
     :param mode: 0 or 1

@@ -8,5 +8,6 @@ requests==2.27.1
 tencentcloud-sdk-python==3.0.579
 graia-ariadne[graia]
 Pillow==9.0.1
+graiax-silkcoder[ffmpeg]
 dnspython
 loguru
