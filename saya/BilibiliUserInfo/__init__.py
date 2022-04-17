@@ -43,7 +43,7 @@ async def user(uid):
             name = json.loads(rr)["data"]["name"]
             sex = json.loads(rr)["data"]["sex"]
             sign = json.loads(rr)["data"]["sign"]
-            msg = f"{name}:\n签名：{sign}\n性别：{sex}\n关注：{str(follow)}人\n粉丝：{str(follower)}人"
+            msg = f"\n{name}:\n签名：{sign}\n性别：{sex}\n关注：{str(follow)}人\n粉丝：{str(follower)}人"
             if uid == "208259":
                 msg = msg + "\n叔叔我啊, 可要生气了。"
     except KeyError:
