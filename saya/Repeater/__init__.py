@@ -7,6 +7,7 @@ from graia.ariadne.app import Ariadne
 
 from saya import Including
 
+import datetime
 import threading
 
 
@@ -29,18 +30,20 @@ limiter = {}
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def Repeater(app: Ariadne, group: Group, message: MessageChain):
-    if str(list(message)) in counter.keys():
-        counter[str(list(message))] += 1
+    if message.asDisplay().startswith("["):
+        pass
     else:
-        counter[str(list(message))] = 1
-        try:
-            limiter[str(list(message))] = limiter[str(list(message))] ** limiter[str(list(message))]
-        except KeyError:
-            limiter[str(list(message))] = 5
-
+        if message.asDisplay() in counter.keys():
+            counter[message.asDisplay()] += 1
+        else:
+            counter[message.asDisplay()] = 1
+            try:
+                limiter[message.asDisplay()] = limiter[message.asDisplay()] ** limiter[message.asDisplay()]
+            except KeyError:
+                limiter[message.asDisplay()] = 5
     try:
-        if counter[str(list(message))] >= limiter[str(list(message))]:
-            del counter[str(list(message))]
+        if counter[message.asDisplay()] >= limiter[message.asDisplay()]:
+            del counter[message.asDisplay()]
             await app.sendGroupMessage(group, message)
     except KeyError:
         pass
