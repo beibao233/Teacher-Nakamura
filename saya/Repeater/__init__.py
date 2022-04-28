@@ -30,20 +30,18 @@ limiter = {}
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def Repeater(app: Ariadne, group: Group, message: MessageChain):
-    if message.asDisplay().startswith("["):
-        pass
+    if str(message) in counter.keys():
+        counter[str(message)] += 1
     else:
-        if message.asDisplay() in counter.keys():
-            counter[message.asDisplay()] += 1
-        else:
-            counter[message.asDisplay()] = 1
-            try:
-                limiter[message.asDisplay()] = limiter[message.asDisplay()] ** limiter[message.asDisplay()]
-            except KeyError:
-                limiter[message.asDisplay()] = 5
+        counter[str(message)] = 1
+        try:
+            limiter[str(message)] = limiter[str(message)] ** limiter[str(message)]
+        except KeyError:
+            limiter[str(message)] = 5
+
     try:
-        if counter[message.asDisplay()] >= limiter[message.asDisplay()]:
-            del counter[message.asDisplay()]
+        if counter[str(message)] >= limiter[str(message)]:
+            del counter[str(message)]
             await app.sendGroupMessage(group, message)
     except KeyError:
         pass
