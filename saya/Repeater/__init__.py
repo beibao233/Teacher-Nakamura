@@ -41,10 +41,12 @@ async def Repeater(app: Ariadne, group: Group, message: MessageChain):
                 limiter[message.asDisplay()] = limiter[message.asDisplay()] ** limiter[message.asDisplay()]
             except KeyError:
                 limiter[message.asDisplay()] = 5
-
-    if counter[message.asDisplay()] >= limiter[message.asDisplay()]:
-        del counter[message.asDisplay()]
-        await app.sendGroupMessage(group, message)
+    try:
+        if counter[message.asDisplay()] >= limiter[message.asDisplay()]:
+            del counter[message.asDisplay()]
+            await app.sendGroupMessage(group, message)
+    except KeyError:
+        pass
 
 def clean():
     global counter
